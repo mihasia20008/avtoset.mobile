@@ -1,0 +1,3 @@
+rootProject.name = 'avtoset_mobile'
+
+include ':app'
