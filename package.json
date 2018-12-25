@@ -10,9 +10,17 @@
     "test": "jest"
   },
   "dependencies": {
+    "prop-types": "^15.6.2",
     "react": "16.6.3",
     "react-native": "0.57.8",
-    "react-native-barcode-builder": "^1.0.5"
+    "react-native-barcode-builder": "^1.0.5",
+    "react-native-gesture-handler": "^1.0.12",
+    "react-native-svg": "^8.0.10",
+    "react-navigation": "^3.0.9",
+    "react-redux": "^6.0.0",
+    "redux": "^4.0.1",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
@@ -45,6 +53,11 @@
     "*.(js|jsx)": [
       "npm run lint:write",
       "git add"
+    ]
+  },
+  "rnpm": {
+    "assets": [
+      "./assets/fonts/"
     ]
   }
 }
