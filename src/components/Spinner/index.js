@@ -16,6 +16,11 @@ class Spinner extends Component {
     this.runAnimation();
   }
 
+  componentWillUnmount() {
+    const { spinValue } = this.state;
+    Animated.timing(spinValue).stop();
+  }
+
   runAnimation = () => {
     const { spinValue } = this.state;
     spinValue.setValue(0);

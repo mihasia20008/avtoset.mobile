@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, View, Image } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, Linking } from 'react-native';
 
 const styles = StyleSheet.create({
   header: {
@@ -10,13 +10,17 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 5,
     height: 70,
+    flex: 0,
+    paddingTop: 15,
+    paddingBottom: 15,
+    backgroundColor: '#f7f7f7',
+  },
+  actionArea: {
+    height: 70,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    paddingTop: 15,
-    paddingBottom: 15,
-    backgroundColor: '#f7f7f7',
   },
   logo: {
     width: '100%',
@@ -28,6 +32,7 @@ const styles = StyleSheet.create({
 class Header extends Component {
   static propTypes = {
     city: PropTypes.string,
+    link: PropTypes.string,
   };
 
   static getImageSource(code) {
@@ -51,12 +56,22 @@ class Header extends Component {
     }
   }
 
+  handlePress = () => {
+    const { link } = this.props;
+    if (link) {
+      // eslint-disable-next-line no-console
+      Linking.openURL(link).catch(err => console.log('An error occurred', err));
+    }
+  };
+
   render() {
     const { city } = this.props;
 
     return (
       <View style={styles.header}>
-        <Image style={styles.logo} source={Header.getImageSource(city)} />
+        <TouchableOpacity style={styles.actionArea} onPress={this.handlePress}>
+          <Image style={styles.logo} source={Header.getImageSource(city)} />
+        </TouchableOpacity>
       </View>
     );
   }

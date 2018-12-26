@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, View, SafeAreaView } from 'react-native';
+import { connect } from 'react-redux';
 
 import Header from '../../components/Header';
 
@@ -16,7 +17,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   fixBackground: {
-    backgroundColor: '#3275bd',
+    backgroundColor: '#0065BF',
     position: 'absolute',
     bottom: 0,
     right: 0,
@@ -31,14 +32,17 @@ const styles = StyleSheet.create({
 });
 
 class Layout extends Component {
-  static propTypes = { children: PropTypes.node.isRequired };
+  static propTypes = {
+    children: PropTypes.node.isRequired,
+    externalLink: PropTypes.string,
+  };
 
   render() {
-    const { children } = this.props;
+    const { children, externalLink } = this.props;
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <Header />
+          <Header link={externalLink} />
           <View style={styles.content}>{children}</View>
         </View>
         <View style={styles.fixBackground} />
@@ -47,4 +51,10 @@ class Layout extends Component {
   }
 }
 
-export default Layout;
+const mapStateToProps = ({ User }) => {
+  return {
+    externalLink: User.externalLink,
+  };
+};
+
+export default connect(mapStateToProps)(Layout);

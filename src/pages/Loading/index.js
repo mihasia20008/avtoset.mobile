@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',
+    width: Dimensions.get('window').width,
     height: Dimensions.get('window').height - 70,
   },
   wrap: {
