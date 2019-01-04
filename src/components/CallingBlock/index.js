@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   text: {
     color: '#fff',
     fontFamily: 'PT Sans',
-    fontSize: 18,
+    fontSize: 17,
   },
   iconContainer: {
     position: 'absolute',

@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: 'PT Sans',
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'normal',
     textAlign: 'center',
   },

@@ -11,12 +11,14 @@ const styles = StyleSheet.create({
     zIndex: 5,
     height: 70,
     flex: 0,
-    paddingTop: 15,
-    paddingBottom: 15,
+    alignItems: 'center',
+    paddingTop: 10,
+    paddingBottom: 10,
     backgroundColor: '#f7f7f7',
   },
   actionArea: {
-    height: 70,
+    height: 80,
+    width: '60%',
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
@@ -25,7 +27,6 @@ const styles = StyleSheet.create({
   logo: {
     width: '100%',
     height: '100%',
-    resizeMode: 'contain',
   },
 });
 
@@ -70,7 +71,7 @@ class Header extends Component {
     return (
       <View style={styles.header}>
         <TouchableOpacity style={styles.actionArea} onPress={this.handlePress}>
-          <Image style={styles.logo} source={Header.getImageSource(city)} />
+          <Image style={styles.logo} source={Header.getImageSource(city)} resizeMode="contain" />
         </TouchableOpacity>
       </View>
     );

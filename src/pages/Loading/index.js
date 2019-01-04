@@ -7,6 +7,7 @@ import Spinner from '../../components/Spinner';
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
+    top: 70,
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
