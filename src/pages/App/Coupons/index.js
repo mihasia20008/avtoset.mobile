@@ -1,50 +1,25 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { StyleSheet, Text, View } from 'react-native';
+import { createStackNavigator } from 'react-navigation';
 
-import PageTitle from '../../../components/PageTitle';
-import SignBlock from '../../../components/SignBlock';
-import Button from '../../../components/Button';
+import CouponsList from './List';
+import CouponDetail from './Detail';
 
-const styles = StyleSheet.create({
-  container: {
-    paddingLeft: 15,
-    paddingRight: 15,
+const CouponsPage = createStackNavigator(
+  {
+    CouponsList,
   },
-  content: {
-    flex: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    marginTop: 20,
+  {
+    headerMode: 'none',
   },
-});
+);
 
-class CouponsPage extends Component {
-  static propTypes = {
-    navigation: PropTypes.shape({
-      goBack: PropTypes.func.isRequired,
-    }),
-  };
-
-  handleBackPress = () => {
-    const { navigation } = this.props;
-    navigation.goBack();
-  };
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <PageTitle title="Персональные предложения" />
-        <SignBlock>
-          <Text style={{ textAlign: 'center' }}>Скоро тут будут персональные предложения</Text>
-          <View style={styles.content}>
-            <Button isEmpty text="Назад" onPress={this.handleBackPress} />
-          </View>
-        </SignBlock>
-      </View>
-    );
-  }
-}
-
-export default CouponsPage;
+export default createStackNavigator(
+  {
+    CouponsPage,
+    CouponPage: CouponDetail,
+  },
+  {
+    initialRouteName: 'CouponsPage',
+    headerMode: 'none',
+    mode: 'modal',
+  },
+);
