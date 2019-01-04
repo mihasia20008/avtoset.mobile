@@ -43,6 +43,7 @@
 		0AAEA7F1F5BB4CD8A52529F3 /* libRNSVG-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FFE93B780754B1CA11C6AC6 /* libRNSVG-tvOS.a */; };
 		1068A013A59E4C1BBAFEADDE /* PT_Sans-Web-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DD930C92548E452A8E49CB08 /* PT_Sans-Web-Bold.ttf */; };
 		F8D18DED730F4BB2BFF03564 /* PT_Sans-Web-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 536A6F4006D84F10BC75057B /* PT_Sans-Web-Regular.ttf */; };
+		5E67E1339F914BA3B1CF1EB3 /* PT_Sans-Web-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 886740384A614BD6B944EFD3 /* PT_Sans-Web-Italic.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -370,6 +371,7 @@
 		3FFE93B780754B1CA11C6AC6 /* libRNSVG-tvOS.a */ = {isa = PBXFileReference; name = "libRNSVG-tvOS.a"; path = "libRNSVG-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		DD930C92548E452A8E49CB08 /* PT_Sans-Web-Bold.ttf */ = {isa = PBXFileReference; name = "PT_Sans-Web-Bold.ttf"; path = "../assets/fonts/PT_Sans-Web-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		536A6F4006D84F10BC75057B /* PT_Sans-Web-Regular.ttf */ = {isa = PBXFileReference; name = "PT_Sans-Web-Regular.ttf"; path = "../assets/fonts/PT_Sans-Web-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		886740384A614BD6B944EFD3 /* PT_Sans-Web-Italic.ttf */ = {isa = PBXFileReference; name = "PT_Sans-Web-Italic.ttf"; path = "../assets/fonts/PT_Sans-Web-Italic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -652,6 +654,7 @@
 			children = (
 				DD930C92548E452A8E49CB08 /* PT_Sans-Web-Bold.ttf */,
 				536A6F4006D84F10BC75057B /* PT_Sans-Web-Regular.ttf */,
+				886740384A614BD6B944EFD3 /* PT_Sans-Web-Italic.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1123,6 +1126,7 @@
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				1068A013A59E4C1BBAFEADDE /* PT_Sans-Web-Bold.ttf in Resources */,
 				F8D18DED730F4BB2BFF03564 /* PT_Sans-Web-Regular.ttf in Resources */,
+				5E67E1339F914BA3B1CF1EB3 /* PT_Sans-Web-Italic.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
