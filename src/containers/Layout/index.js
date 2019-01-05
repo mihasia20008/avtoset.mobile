@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, View, SafeAreaView } from 'react-native';
+import { StyleSheet, View, SafeAreaView, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 
 import Header from '../../components/Header';
+import Spinner from '../../components/Spinner';
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -29,30 +30,55 @@ const styles = StyleSheet.create({
     paddingTop: 70,
     flex: 1,
   },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    zIndex: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  spinner: {
+    width: Dimensions.get('window').width * 0.5,
+    height: Dimensions.get('window').width * 0.5,
+  },
 });
 
 class Layout extends Component {
   static propTypes = {
     children: PropTypes.node.isRequired,
+    isFetching: PropTypes.bool,
     externalLink: PropTypes.string,
   };
 
   render() {
-    const { children, externalLink } = this.props;
+    const { children, isFetching, externalLink } = this.props;
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
           <Header link={externalLink} />
           <View style={styles.content}>{children}</View>
         </View>
+        {isFetching ? (
+          <View style={styles.overlay}>
+            <View style={styles.spinner}>
+              <Spinner />
+            </View>
+          </View>
+        ) : null}
         <View style={styles.fixBackground} />
       </SafeAreaView>
     );
   }
 }
 
-const mapStateToProps = ({ User }) => {
+const mapStateToProps = state => {
+  const { User } = state;
   return {
+    isFetching: Object.keys(state).some(key => state[key].isFetching),
     externalLink: User.externalLink,
   };
 };
