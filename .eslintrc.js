@@ -55,5 +55,7 @@ module.exports = {
     ], // для ошибки вложенных свойств htmlFor элементов label
 
     'prettier/prettier': ['error'],
+    'import/prefer-default-export': 'off',
+    'react/destructuring-assignment': 'off'
   },
 };
