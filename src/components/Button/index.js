@@ -15,8 +15,13 @@ const styles = StyleSheet.create({
   },
   emptyButton: {
     backgroundColor: 'transparent',
-    borderWidth: 1,
     borderColor: '#2975c0',
+  },
+  shadowButton: {
+    paddingLeft: 0,
+    paddingRight: 0,
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
   },
   text: {
     fontFamily: 'PT Sans',
@@ -27,6 +32,9 @@ const styles = StyleSheet.create({
   emptyText: {
     color: '#005fb1',
   },
+  shadowText: {
+    color: '#005fb1',
+  },
 });
 
 class Button extends Component {
@@ -34,18 +42,28 @@ class Button extends Component {
     text: PropTypes.string.isRequired,
     onPress: PropTypes.func.isRequired,
     isEmpty: PropTypes.bool,
+    isShadow: PropTypes.bool,
   };
 
   render() {
-    const { text, onPress, isEmpty } = this.props;
+    const { text, onPress, isEmpty, isShadow } = this.props;
 
     return (
       <TouchableOpacity
-        style={[styles.button, isEmpty ? styles.emptyButton : '']}
+        style={[
+          styles.button,
+          isEmpty ? styles.emptyButton : '',
+          isShadow ? styles.shadowButton : '',
+        ]}
         onPress={onPress}
         // eslint-disable-next-line prettier/prettier
       >
-        <Text style={[styles.text, isEmpty ? styles.emptyText : '']}>{text}</Text>
+        <Text
+          style={[styles.text, isEmpty ? styles.emptyText : '', isShadow ? styles.shadowText : '']}
+          // eslint-disable-next-line prettier/prettier
+        >
+          {text}
+        </Text>
       </TouchableOpacity>
     );
   }
