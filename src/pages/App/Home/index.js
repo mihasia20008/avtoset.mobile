@@ -1,16 +1,32 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
-import { WebView } from 'react-native';
+import { Linking } from 'react-native';
 import { connect } from 'react-redux';
 
 class HomePage extends Component {
-  static propTypes = { uri: PropTypes.string };
+  static propTypes = {
+    uri: PropTypes.string,
+    navigation: PropTypes.shape({
+      navigate: PropTypes.func.isRequired,
+    }),
+  };
 
   static defaultProps = { uri: '' };
 
-  render() {
+  componentDidMount() {
     const { uri } = this.props;
-    return <WebView source={{ uri }} />;
+    Linking.canOpenURL(uri).then(supported => {
+      if (supported) {
+        Linking.openURL(uri);
+      } else {
+        // eslint-disable-next-line no-alert
+        alert(`Произошла ошибка при попытке открыть следующую страницу: ${uri}`);
+      }
+    });
+  }
+
+  render() {
+    return null;
   }
 }
 
