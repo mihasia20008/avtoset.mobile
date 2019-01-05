@@ -22,8 +22,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 4,
     borderBottomColor: '#0071bb',
   },
-  contentWrap: {},
-  contentText: {},
+  contentWrap: {
+    marginTop: 20,
+  },
+  contentText: {
+    fontFamily: 'PT Sans',
+    fontSize: 14,
+    color: '#888',
+  },
   formWrap: {
     paddingTop: 20,
     paddingBottom: 20,
@@ -58,12 +64,27 @@ class SignBlock extends Component {
     return <View style={styles.hr} />;
   }
 
+  renderContent() {
+    const { content } = this.props;
+
+    if (content) {
+      return (
+        <View style={styles.contentWrap}>
+          <Text style={styles.contentText}>{content}</Text>
+        </View>
+      );
+    }
+
+    return null;
+  }
+
   render() {
     const { children } = this.props;
 
     return (
       <View style={styles.container}>
         {this.renderTitle()}
+        {this.renderContent()}
         <View style={styles.formWrap}>{children}</View>
       </View>
     );
