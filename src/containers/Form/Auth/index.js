@@ -34,7 +34,6 @@ class AuthForm extends Component {
       required: true,
       status: '',
       errorText: '',
-      onEvent: this.handleInputBlur,
     },
     password: {
       type: 'password',
@@ -43,7 +42,6 @@ class AuthForm extends Component {
       required: true,
       status: '',
       errorText: '',
-      onEvent: this.handleInputBlur,
     },
   };
 
@@ -104,7 +102,7 @@ class AuthForm extends Component {
       <View>
         <View>
           {Object.keys(this.state).map(key => (
-            <Input key={key} name={key} {...this.state[key]} />
+            <Input key={key} name={key} onEvent={this.handleInputBlur} {...this.state[key]} />
           ))}
         </View>
         {errorText ? (
