@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, View } from 'react-native';
+import { StackActions, NavigationActions } from 'react-navigation';
 
 import PageTitle from '../../../components/PageTitle';
 import SignBlock from '../../../components/SignBlock';
@@ -23,13 +24,17 @@ const styles = StyleSheet.create({
 class SignInPage extends Component {
   static propTypes = {
     navigation: PropTypes.shape({
-      goBack: PropTypes.func.isRequired,
+      dispatch: PropTypes.func.isRequired,
     }),
   };
 
   handleBackPress = () => {
     const { navigation } = this.props;
-    navigation.goBack();
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'SignUp' })],
+    });
+    navigation.dispatch(resetAction);
   };
 
   render() {
