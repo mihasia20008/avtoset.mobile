@@ -6,18 +6,20 @@ import { connect } from 'react-redux';
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 
-import { authUser } from '../../../redux/user/actions';
+import { restorePassword, resetRestoreData } from '../../../redux/user/actions';
 
 import globalFormStyles from '../styles';
 
-class AuthForm extends Component {
+class RestorePasswordForm extends Component {
   static propTypes = {
-    defaultPhone: PropTypes.string,
-    infoMessage: PropTypes.string,
-    isAuth: PropTypes.bool.isRequired,
+    isRestore: PropTypes.bool.isRequired,
     errorText: PropTypes.string.isRequired,
-    onSuccessSubmit: PropTypes.func.isRequired,
-    onGoToRestorePassword: PropTypes.func.isRequired,
+    restoreData: PropTypes.shape({
+      phone: PropTypes.string,
+      message: PropTypes.string,
+    }),
+    onGoToAuth: PropTypes.func.isRequired,
+    onSuccessRestore: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
   };
 
@@ -25,14 +27,6 @@ class AuthForm extends Component {
     phone: {
       type: 'phone',
       label: 'Номер телефона',
-      value: this.props.defaultPhone || '',
-      required: true,
-      status: '',
-      errorText: '',
-    },
-    password: {
-      type: 'password',
-      label: 'Пароль',
       value: '',
       required: true,
       status: '',
@@ -41,11 +35,12 @@ class AuthForm extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    const { isAuth: nowAuthStatus, onSuccessSubmit } = this.props;
-    const { isAuth: prevAuthStatus } = prevProps;
+    const { isRestore: nowRestoreStatus, onSuccessRestore, restoreData, dispatch } = this.props;
+    const { isRestore: prevRestoreStatus } = prevProps;
 
-    if (nowAuthStatus && !prevAuthStatus) {
-      onSuccessSubmit();
+    if (nowRestoreStatus && !prevRestoreStatus) {
+      onSuccessRestore(restoreData);
+      dispatch(resetRestoreData());
     }
   }
 
@@ -81,28 +76,28 @@ class AuthForm extends Component {
 
     if (canSubmit) {
       const { dispatch } = this.props;
-      dispatch(authUser(submitObject));
+      dispatch(restorePassword(submitObject));
     }
   };
 
-  handleGoToRestorePassword = () => {
-    const { onGoToRestorePassword } = this.props;
-    onGoToRestorePassword();
+  handleGoToAuth = () => {
+    const { onGoToAuth, dispatch } = this.props;
+    onGoToAuth();
+    dispatch(resetRestoreData());
   };
 
   render() {
-    const { errorText, infoMessage } = this.props;
+    const { errorText } = this.props;
 
     return (
       <View>
-        {infoMessage ? <Text style={globalFormStyles.infoMessage}>{infoMessage}</Text> : null}
         {Object.keys(this.state).map(key => (
           <Input key={key} name={key} onEvent={this.handleInputBlur} {...this.state[key]} />
         ))}
         {errorText ? <Text style={globalFormStyles.errorText}>{errorText}</Text> : null}
         <View style={globalFormStyles.buttons}>
-          <Button text="Войти" onPress={this.handleSubmitForm} />
-          <Button isShadow text="Забыли пароль?" onPress={this.handleGoToRestorePassword} />
+          <Button text="Восстановить" onPress={this.handleSubmitForm} />
+          <Button isShadow text="Назад" onPress={this.handleGoToAuth} />
         </View>
       </View>
     );
@@ -111,9 +106,10 @@ class AuthForm extends Component {
 
 const mapStateToProps = ({ User }) => {
   return {
-    isAuth: User.result.isAuth,
-    errorText: User.errors.auth,
+    isRestore: User.result.isRestore,
+    errorText: User.errors.restore,
+    restoreData: User.restoreData,
   };
 };
 
-export default connect(mapStateToProps)(AuthForm);
+export default connect(mapStateToProps)(RestorePasswordForm);

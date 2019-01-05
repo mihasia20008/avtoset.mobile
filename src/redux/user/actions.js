@@ -17,3 +17,32 @@ export function authUser(authObject) {
     }
   };
 }
+
+export function restorePassword(restoreObject) {
+  return async dispatch => {
+    try {
+      dispatch({ type: T.USER_RESTORE_PASSWORD_FETCH });
+      const { isSuccess, ...res } = await User.restorePassword(restoreObject);
+      if (!isSuccess) {
+        dispatch({ type: T.USER_RESTORE_PASSWORD_ERROR, message: res.message });
+        return;
+      }
+      dispatch({
+        type: T.USER_RESTORE_PASSWORD_SUCCESS,
+        data: {
+          message: 'Новый пароль был отправлен в SMS на указанный номер',
+          phone: restoreObject.phone,
+        },
+      });
+    } catch (err) {
+      dispatch({
+        type: T.USER_RESTORE_PASSWORD_ERROR,
+        message: 'Ошибка в процессе восстановления пароля',
+      });
+    }
+  };
+}
+
+export function resetRestoreData() {
+  return dispatch => dispatch({ type: T.USER_RESTORE_PASSWORD_RESET });
+}

@@ -1,23 +1,25 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View } from 'react-native';
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
 
 import PageTitle from '../../../components/PageTitle';
 import SignBlock from '../../../components/SignBlock';
-import Button from '../../../components/Button';
+import RestorePasswordForm from '../../../containers/Form/RestorePassword';
 
 const styles = StyleSheet.create({
   container: {
-    paddingLeft: 15,
-    paddingRight: 15,
+    flex: 1,
   },
   content: {
-    flex: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 20,
+    paddingLeft: 15,
+    paddingRight: 15,
   },
 });
 
@@ -28,7 +30,13 @@ class RestorePasswordPage extends Component {
   static propTypes = {
     navigation: PropTypes.shape({
       dispatch: PropTypes.func.isRequired,
+      navigate: PropTypes.func.isRequired,
     }),
+  };
+
+  handleSuccessRestore = data => {
+    const { navigation } = this.props;
+    navigation.navigate('SignUp', data);
   };
 
   handleBackPress = () => {
@@ -42,18 +50,30 @@ class RestorePasswordPage extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <PageTitle title="Восстановление пароля" />
-        <SignBlock content={pageText}>
-          <Text style={{ textAlign: 'center' }}>
-            Скоро тут будет страница восстановления пароля
-          </Text>
-          <View style={styles.content}>
-            <Button text="Восстановить" onPress={this.handleBackPress} />
-            <Button isShadow text="Назад" onPress={this.handleBackPress} />
-          </View>
-        </SignBlock>
-      </View>
+      <KeyboardAvoidingView behavior="padding">
+        <TouchableWithoutFeedback
+          style={styles.container}
+          onPress={Keyboard.dismiss}
+          accessible={false}
+          // eslint-disable-next-line prettier/prettier
+        >
+          <ScrollView
+            style={styles.content}
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardDismissMode="on-drag"
+            keyboardShouldPersistTaps="handled"
+            // eslint-disable-next-line prettier/prettier
+          >
+            <PageTitle title="Восстановление пароля" />
+            <SignBlock content={pageText}>
+              <RestorePasswordForm
+                onGoToAuth={this.handleBackPress}
+                onSuccessRestore={this.handleSuccessRestore}
+              />
+            </SignBlock>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     );
   }
 }

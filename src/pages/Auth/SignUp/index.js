@@ -35,7 +35,9 @@ const styles = StyleSheet.create({
 class SignUpPage extends Component {
   static propTypes = {
     navigation: PropTypes.shape({
+      getParam: PropTypes.func.isRequired,
       dispatch: PropTypes.func.isRequired,
+      navigate: PropTypes.func.isRequired,
     }),
   };
 
@@ -63,6 +65,10 @@ class SignUpPage extends Component {
   };
 
   render() {
+    const { navigation } = this.props;
+    const phone = navigation.getParam('phone');
+    const message = navigation.getParam('message');
+
     return (
       <KeyboardAvoidingView behavior="padding">
         <TouchableWithoutFeedback
@@ -81,6 +87,8 @@ class SignUpPage extends Component {
             <PageTitle title="Авторизация" />
             <SignBlock title="Я - участник клуба «Автосеть»">
               <AuthForm
+                defaultPhone={phone}
+                infoMessage={message}
                 onSuccessSubmit={this.handleGoToApp}
                 onGoToRestorePassword={this.handleGoToRestorePassword}
               />
