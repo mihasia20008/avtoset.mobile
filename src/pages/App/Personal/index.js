@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, AsyncStorage } from 'react-native';
 
 import PageTitle from '../../../components/PageTitle';
 import SignBlock from '../../../components/SignBlock';
@@ -28,8 +28,9 @@ class PersonalPage extends Component {
     }),
   };
 
-  handleLogoutPress = () => {
+  handleLogoutPress = async () => {
     const { navigation } = this.props;
+    await AsyncStorage.clear();
     navigation.navigate('Auth');
   };
 

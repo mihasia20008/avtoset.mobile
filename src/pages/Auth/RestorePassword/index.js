@@ -50,7 +50,7 @@ class RestorePasswordPage extends Component {
 
   render() {
     return (
-      <KeyboardAvoidingView behavior="padding">
+      <KeyboardAvoidingView style={styles.container} behavior="padding">
         <TouchableWithoutFeedback
           style={styles.container}
           onPress={Keyboard.dismiss}

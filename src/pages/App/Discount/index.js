@@ -44,8 +44,8 @@ class DiscountPage extends Component {
 
 const mapStateToProps = ({ User }) => {
   return {
-    card: User.card,
-    phone: User.callCenterPhone,
+    card: User.userData.card,
+    phone: User.userData.region.callCenterPhone,
   };
 };
 

@@ -35,10 +35,15 @@ class LoadingPage extends Component {
     }),
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const { navigation } = this.props;
-
-    setTimeout(() => navigation.navigate('Auth'), 2000);
+    navigation.navigate('SignUp');
+    // const token = await AsyncStorage.getItem('authToken');
+    // if (token) {
+    //   navigation.navigate('App');
+    // } else {
+    //   navigation.navigate('Auth');
+    // }
   }
 
   render() {

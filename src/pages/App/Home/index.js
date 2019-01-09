@@ -32,7 +32,7 @@ class HomePage extends Component {
 
 const mapStateToProps = ({ User }) => {
   return {
-    uri: User.externalLink,
+    uri: User.userData.region.domain,
   };
 };
 

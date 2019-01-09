@@ -49,8 +49,11 @@ class SignUpPage extends Component {
   handleGoToRegister = () => {
     const { navigation } = this.props;
     const resetAction = StackActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName: 'SignIn' })],
+      index: 1,
+      actions: [
+        NavigationActions.navigate({ routeName: 'SignUp' }),
+        NavigationActions.navigate({ routeName: 'SignIn' }),
+      ],
     });
     navigation.dispatch(resetAction);
   };
@@ -58,8 +61,11 @@ class SignUpPage extends Component {
   handleGoToRestorePassword = () => {
     const { navigation } = this.props;
     const resetAction = StackActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName: 'RestorePassword' })],
+      index: 1,
+      actions: [
+        NavigationActions.navigate({ routeName: 'SignUp' }),
+        NavigationActions.navigate({ routeName: 'RestorePassword' }),
+      ],
     });
     navigation.dispatch(resetAction);
   };
@@ -70,7 +76,7 @@ class SignUpPage extends Component {
     const message = navigation.getParam('message');
 
     return (
-      <KeyboardAvoidingView behavior="padding">
+      <KeyboardAvoidingView style={styles.container} behavior="padding">
         <TouchableWithoutFeedback
           style={styles.container}
           onPress={Keyboard.dismiss}
