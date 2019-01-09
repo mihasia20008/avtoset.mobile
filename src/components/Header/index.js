@@ -32,29 +32,30 @@ const styles = StyleSheet.create({
 
 class Header extends Component {
   static propTypes = {
-    city: PropTypes.string,
+    logoSrc: PropTypes.string,
     link: PropTypes.string,
   };
 
-  static getImageSource(code) {
-    switch (code) {
-      case '46': {
-        // eslint-disable-next-line global-require
-        return require(`./images/logo46.png`);
-      }
-      case '36': {
-        // eslint-disable-next-line global-require
-        return require(`./images/logo36.png`);
-      }
-      case '31': {
-        // eslint-disable-next-line global-require
-        return require(`./images/logo31.png`);
-      }
-      default: {
-        // eslint-disable-next-line global-require
-        return require(`./images/logo.png`);
-      }
+  static getImage(logo) {
+    if (/:\/\//.test(logo)) {
+      return (
+        <Image
+          style={styles.logo}
+          source={{
+            uri: logo,
+          }}
+          resizeMode="contain"
+        />
+      );
     }
+    return (
+      <Image
+        style={styles.logo}
+        // eslint-disable-next-line global-require
+        source={require('./images/logo.png')}
+        resizeMode="contain"
+      />
+    );
   }
 
   handlePress = () => {
@@ -66,12 +67,12 @@ class Header extends Component {
   };
 
   render() {
-    const { city } = this.props;
+    const { logoSrc } = this.props;
 
     return (
       <View style={styles.header}>
         <TouchableOpacity style={styles.actionArea} onPress={this.handlePress}>
-          <Image style={styles.logo} source={Header.getImageSource(city)} resizeMode="contain" />
+          {Header.getImage(logoSrc)}
         </TouchableOpacity>
       </View>
     );

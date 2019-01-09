@@ -52,14 +52,15 @@ class Layout extends Component {
     children: PropTypes.node.isRequired,
     isFetching: PropTypes.bool,
     externalLink: PropTypes.string,
+    logo: PropTypes.string,
   };
 
   render() {
-    const { children, isFetching, externalLink } = this.props;
+    const { children, isFetching, externalLink, logo } = this.props;
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <Header link={externalLink} />
+          <Header link={externalLink} logoSrc={logo} />
           <View style={styles.content}>{children}</View>
         </View>
         {isFetching ? (
@@ -79,7 +80,8 @@ const mapStateToProps = state => {
   const { User } = state;
   return {
     isFetching: Object.keys(state).some(key => state[key].isFetching),
-    externalLink: User.externalLink,
+    externalLink: User.userData.region.domain,
+    logo: User.userData.region.logo,
   };
 };
 
