@@ -2,15 +2,18 @@ import * as T from './actionTypes';
 
 const initialState = {
   isFetching: false,
-  phone: '',
-  lastName: '',
-  firstName: '',
-  email: '',
-  card: '',
-  birthday: '',
-  gender: '',
-  externalLink: '',
-  callCenterPhone: '',
+  userData: {
+    authToken: '',
+    card: '',
+    cars: [],
+    id: 0,
+    profile: [],
+    region: {
+      domain: 'https://avtoset.su',
+      logo: 'default_logo',
+      callCenterPhone: '',
+    },
+  },
   result: {
     isAuth: false,
     isRestore: false,
@@ -47,6 +50,7 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         isFetching: false,
+        userData: Object.assign({}, state.userData, action.data),
         result: Object.assign({}, state.result, { isAuth: true }),
       };
     }

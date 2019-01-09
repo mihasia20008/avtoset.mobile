@@ -4,25 +4,30 @@ import { SERVER } from '../../constants';
 
 export default async authData => {
   try {
-    const { data } = await axios({
+    const { data: response } = await axios({
       method: 'POST',
-      url: `${SERVER.HOST}${SERVER.API_PATH}/login.php`,
+      url: `${SERVER.HOST}${SERVER.API_PATH}/auth/login`,
       data: authData,
     });
-    if (typeof data === 'string') {
-      return {
-        isSuccess: false,
-        needLog: true,
-        message: 'Ошибка выполнения процесса авторизации',
-        forDevelopers: data,
-      };
+    if (typeof response === 'string') {
+      throw new Error(response);
     }
-    const { status, ...rest } = data;
+    const {
+      meta: { access_token: authToken },
+      data: { region, ...rest },
+    } = response;
     return {
-      isSuccess: status === 'success',
+      isSuccess: true,
+      authToken,
+      region: {
+        domain: region.domain_url,
+        logo: region.logo_url,
+        callCenterPhone: region.mobile_phone,
+      },
       ...rest,
     };
   } catch (err) {
+    // TODO обработка ошибок сервера
     return {
       isSuccess: false,
       needLog: true,

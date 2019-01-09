@@ -10,12 +10,7 @@ export default async restoreData => {
       data: restoreData,
     });
     if (typeof data === 'string') {
-      return {
-        isSuccess: false,
-        needLog: true,
-        message: 'Ошибка выполнения процесса восстановления пароля',
-        forDevelopers: data,
-      };
+      throw new Error(data);
     }
     const { status, ...rest } = data;
     return {

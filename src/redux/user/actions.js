@@ -1,3 +1,4 @@
+import { AsyncStorage } from 'react-native';
 import * as T from './actionTypes';
 
 import { User } from '../../services/api';
@@ -11,6 +12,7 @@ export function authUser(authObject) {
         dispatch({ type: T.USER_LOGIN_ERROR, message: res.message });
         return;
       }
+      await AsyncStorage.setItem('authToken', res.authToken);
       dispatch({ type: T.USER_LOGIN_SUCCESS, data: res });
     } catch (err) {
       dispatch({ type: T.USER_LOGIN_ERROR, message: 'Ошибка в процессе авторизации' });

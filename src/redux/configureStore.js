@@ -6,9 +6,10 @@ import * as rootReducer from './rootReducer';
 export default () => {
   let middlewares = [thunk];
 
-  // if (process.env.NODE_ENV !== 'production') {
-  middlewares.push(logger);
-  // }
+  // eslint-disable-next-line no-undef
+  if (__DEV__ !== 'production') {
+    middlewares.push(logger);
+  }
 
   const globalReducer = combineReducers(rootReducer);
 
@@ -16,14 +17,16 @@ export default () => {
 
   /* eslint-disable no-underscore-dangle */
   const composeEnhancers =
-    process.env.NODE_ENV !== 'production' &&
+    // eslint-disable-next-line no-undef
+    __DEV__ !== 'production' &&
     typeof window === 'object' &&
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
       ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ shouldHotReload: false })
       : compose;
   /* eslint-enable */
 
-  if (process.env.NODE_ENV !== 'production') {
+  // eslint-disable-next-line no-undef
+  if (__DEV__ !== 'production') {
     middlewares = composeEnhancers(middlewares);
   }
 
