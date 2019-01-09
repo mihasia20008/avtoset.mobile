@@ -1,54 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet } from 'react-native';
 
 import InputPhone from './Phone';
+import InputPhoneConfirm from './PhoneConfirm';
 import InputPassword from './Password';
-
-export const styles = StyleSheet.create({
-  container: {
-    marginBottom: 30,
-  },
-  labelWrap: {
-    flexDirection: 'row',
-    marginBottom: 8,
-  },
-  labelText: {
-    color: '#888',
-    fontFamily: 'PT Sans',
-    fontSize: 18,
-  },
-  star: {
-    marginLeft: 4,
-    color: '#e62222',
-    fontFamily: 'PT Sans',
-    fontSize: 16,
-  },
-  input: {
-    paddingTop: 8,
-    paddingBottom: 8,
-    paddingLeft: 13,
-    paddingRight: 13,
-    color: '#383838',
-    backgroundColor: '#f7f7f7',
-    borderWidth: 1,
-    borderColor: '#eaebec',
-    borderRadius: 2,
-    fontFamily: 'PT Sans',
-    fontSize: 18,
-  },
-  errorWrap: {
-    position: 'absolute',
-    top: '100%',
-    left: 0,
-    paddingTop: 5,
-  },
-  errorText: {
-    color: '#b03535',
-    fontFamily: 'PT Sans',
-    fontSize: 13,
-  },
-});
+import InputName from './Name';
+import InputEmail from './Email';
+import InputCityPicker from './CityPicker';
+import InputDatePicker from './DatePicker';
+import InputCarPicker from './CarPicker';
+import Checkbox from './Checkbox';
 
 class Input extends Component {
   static propTypes = {
@@ -61,8 +22,29 @@ class Input extends Component {
       case 'phone': {
         return <InputPhone {...rest} />;
       }
+      case 'phone-confirm': {
+        return <InputPhoneConfirm {...rest} />;
+      }
       case 'password': {
         return <InputPassword {...rest} />;
+      }
+      case 'name': {
+        return <InputName {...rest} />;
+      }
+      case 'email': {
+        return <InputEmail {...rest} />;
+      }
+      case 'city-picker': {
+        return <InputCityPicker {...rest} />;
+      }
+      case 'date-picker': {
+        return <InputDatePicker {...rest} />;
+      }
+      case 'car-picker': {
+        return <InputCarPicker {...rest} />;
+      }
+      case 'checkbox': {
+        return <Checkbox {...rest} />;
       }
       default: {
         return null;
