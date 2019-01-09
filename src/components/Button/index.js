@@ -23,6 +23,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderColor: 'transparent',
   },
+  disabledButton: {
+    backgroundColor: 'rgb(198, 198, 198)',
+    borderColor: 'rgb(198, 198, 198)',
+  },
   text: {
     fontFamily: 'PT Sans',
     fontSize: 16,
@@ -43,10 +47,18 @@ class Button extends Component {
     onPress: PropTypes.func.isRequired,
     isEmpty: PropTypes.bool,
     isShadow: PropTypes.bool,
+    disabled: PropTypes.bool,
+  };
+
+  handlePress = () => {
+    const { disabled, onPress } = this.props;
+    if (!disabled) {
+      onPress();
+    }
   };
 
   render() {
-    const { text, onPress, isEmpty, isShadow } = this.props;
+    const { text, isEmpty, isShadow, disabled } = this.props;
 
     return (
       <TouchableOpacity
@@ -54,8 +66,9 @@ class Button extends Component {
           styles.button,
           isEmpty ? styles.emptyButton : '',
           isShadow ? styles.shadowButton : '',
+          disabled ? styles.disabledButton : '',
         ]}
-        onPress={onPress}
+        onPress={this.handlePress}
         // eslint-disable-next-line prettier/prettier
       >
         <Text
