@@ -40,6 +40,15 @@ class AuthForm extends Component {
     },
   };
 
+  static getDerivedStateFromProps(props, state) {
+    if (props.defaultPhone && props.defaultPhone !== state.phone.value) {
+      return {
+        phone: Object.assign({}, state.phone, { value: props.defaultPhone }),
+      };
+    }
+    return {};
+  }
+
   componentDidUpdate(prevProps) {
     const { isAuth: nowAuthStatus, onSuccessSubmit } = this.props;
     const { isAuth: prevAuthStatus } = prevProps;
@@ -50,10 +59,9 @@ class AuthForm extends Component {
   }
 
   handleInputBlur = (key, value) => {
-    const prevValue = this.state[key];
-    this.setState({
-      [`${key}`]: Object.assign({}, prevValue, value),
-    });
+    this.setState(prevState => ({
+      [`${key}`]: Object.assign({}, prevState[key], value),
+    }));
   };
 
   handleSubmitForm = () => {

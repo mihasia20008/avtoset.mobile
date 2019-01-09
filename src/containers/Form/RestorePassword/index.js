@@ -31,6 +31,7 @@ class RestorePasswordForm extends Component {
       required: true,
       status: '',
       errorText: '',
+      returnTypingValue: true,
     },
   };
 
@@ -45,10 +46,9 @@ class RestorePasswordForm extends Component {
   }
 
   handleInputBlur = (key, value) => {
-    const prevValue = this.state[key];
-    this.setState({
-      [`${key}`]: Object.assign({}, prevValue, value),
-    });
+    this.setState(prevState => ({
+      [`${key}`]: Object.assign({}, prevState[key], value),
+    }));
   };
 
   handleSubmitForm = () => {
