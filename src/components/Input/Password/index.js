@@ -4,7 +4,7 @@ import { View, Text, TextInput } from 'react-native';
 
 import ValidateIcon from '../../ValidateIcon';
 
-import { styles as globalStyles } from '../index';
+import globalStyles from '../styles';
 
 class InputPassword extends Component {
   static propTypes = {
@@ -14,11 +14,23 @@ class InputPassword extends Component {
     value: PropTypes.string.isRequired,
     errorText: PropTypes.string.isRequired,
     required: PropTypes.bool.isRequired,
+    editable: PropTypes.bool,
     onEvent: PropTypes.func.isRequired,
+    onFocus: PropTypes.func,
+  };
+
+  static defaultProps = {
+    editable: true,
+    onFocus: () => {},
   };
 
   state = {
     value: this.props.value,
+  };
+
+  handleInputFocus = () => {
+    const { name, onFocus } = this.props;
+    onFocus(name);
   };
 
   handleChangeText = value => {
@@ -62,7 +74,7 @@ class InputPassword extends Component {
   };
 
   render() {
-    const { label, required, status, errorText } = this.props;
+    const { label, required, editable, status, errorText } = this.props;
     const { value } = this.state;
 
     return (
@@ -74,9 +86,12 @@ class InputPassword extends Component {
         <TextInput
           style={globalStyles.input}
           secureTextEntry
+          onFocus={this.handleInputFocus}
           onChangeText={this.handleChangeText}
           onBlur={this.handleInputBlur}
           value={value}
+          editable={editable}
+          selectTextOnFocus={editable}
           autoCorrect={false}
         />
         {errorText ? (

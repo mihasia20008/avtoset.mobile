@@ -5,7 +5,7 @@ import TextInputMask from 'react-native-text-input-mask';
 
 import ValidateIcon from '../../ValidateIcon';
 
-import { styles as globalStyles } from '../index';
+import globalStyles from '../styles';
 
 const styles = StyleSheet.create({
   wrap: {
@@ -40,15 +40,63 @@ class InputPhone extends Component {
     value: PropTypes.string.isRequired,
     errorText: PropTypes.string.isRequired,
     required: PropTypes.bool.isRequired,
+    editable: PropTypes.bool,
+    returnTypingValue: PropTypes.bool,
     onEvent: PropTypes.func.isRequired,
+    onFocus: PropTypes.func,
   };
+
+  static defaultProps = {
+    editable: true,
+    returnTypingValue: false,
+    onFocus: () => {},
+  };
+
+  static validateValue(value, required) {
+    if (value === '' && required) {
+      return {
+        status: 'error',
+        errorText: 'Поле обязательно для заполнения!',
+      };
+    }
+    if (value.length < 10) {
+      return {
+        status: 'error',
+        errorText: 'Введен неверный номер телефона!',
+      };
+    }
+    if (value[0] !== '9') {
+      return {
+        status: 'error',
+        errorText: 'Номер телефона должен начинаться с 9!',
+      };
+    }
+    return {
+      status: 'success',
+      errorText: '',
+    };
+  }
 
   state = {
     value: this.props.value,
   };
 
+  static getDerivedStateFromProps(props, state) {
+    if (props.value !== state.value) {
+      return {
+        value: props.value,
+      };
+    }
+    return {};
+  }
+
+  handleInputFocus = () => {
+    const { name, onFocus } = this.props;
+    onFocus(name);
+  };
+
   handleChangeText = (formatted, extracted) => {
-    const { name, status, onEvent } = this.props;
+    const { name, status, required, returnTypingValue, onEvent } = this.props;
 
     if (status) {
       onEvent(name, {
@@ -58,45 +106,39 @@ class InputPhone extends Component {
       });
     }
     this.setState({ value: extracted });
+
+    if (returnTypingValue) {
+      const validate = InputPhone.validateValue(extracted, required);
+      if (validate.status === 'success') {
+        onEvent(name, {
+          ...validate,
+          value: extracted,
+        });
+      }
+    }
   };
 
   handleInputBlur = () => {
     const { value } = this.state;
     const { name, required, onEvent } = this.props;
 
-    if (value === '' && required) {
+    const validate = InputPhone.validateValue(value, required);
+
+    if (validate.status !== 'success') {
       onEvent(name, {
-        status: 'error',
-        errorText: 'Поле обязательно для заполнения!',
-        value: '',
-      });
-      return;
-    }
-    if (value.length < 10) {
-      onEvent(name, {
-        status: 'error',
-        errorText: 'Введен неверный номер телефона!',
-        value: '',
-      });
-      return;
-    }
-    if (value[0] !== '9') {
-      onEvent(name, {
-        status: 'error',
-        errorText: 'Номер телефона должен начинаться с 9!',
+        ...validate,
         value: '',
       });
       return;
     }
     onEvent(name, {
-      status: 'success',
-      errorText: '',
+      ...validate,
       value,
     });
   };
 
   render() {
-    const { label, required, status, errorText } = this.props;
+    const { label, required, editable, status, errorText } = this.props;
     const { value } = this.state;
 
     return (
@@ -111,13 +153,13 @@ class InputPhone extends Component {
           </View>
           <TextInputMask
             style={[globalStyles.input, styles.input]}
-            refInput={ref => {
-              this.input = ref;
-            }}
             keyboardType="number-pad"
+            onFocus={this.handleInputFocus}
             onChangeText={this.handleChangeText}
             onBlur={this.handleInputBlur}
             value={value}
+            editable={editable}
+            selectTextOnFocus={editable}
             mask="([000]) [000] [00] [00]"
           />
         </View>
