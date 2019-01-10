@@ -1,4 +1,4 @@
-package com.avtoset_mobile;
+package com.avtosetmobile;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
@@ -13,7 +13,7 @@ public class MainActivity extends ReactActivity {
      */
     @Override
     protected String getMainComponentName() {
-        return "avtoset_mobile";
+        return "AvtosetMobile";
     }
 
     @Override
