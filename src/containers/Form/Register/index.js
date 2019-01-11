@@ -5,8 +5,10 @@ import { View } from 'react-native';
 
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
+import Confidential from '../../../components/Confidential';
 
 import globalFormStyles from '../styles';
+import { registerUser } from '../../../redux/user/actions';
 
 class RegisterForm extends Component {
   static propTypes = {
@@ -98,6 +100,12 @@ class RegisterForm extends Component {
       required: true,
       editable: false,
       complete: false,
+    },
+    confidential: {
+      error: false,
+      checked: false,
+      errorText: '',
+      editable: false,
     },
   };
 
@@ -198,24 +206,132 @@ class RegisterForm extends Component {
     }
   };
 
+  handleToggleConfidentialStatus = () => {
+    const { checked } = this.state.confidential;
+
+    if (checked) {
+      this.setState(prevState => ({
+        confidential: Object.assign({}, prevState.confidential, {
+          error: true,
+          checked: !checked,
+        }),
+      }));
+      return;
+    }
+
+    const resultValidation = this.validateFields();
+    if (!resultValidation) {
+      this.setState(prevState => ({
+        confidential: Object.assign({}, prevState.confidential, {
+          error: true,
+          checked: false,
+        }),
+      }));
+      return;
+    }
+
+    this.setState(prevState => ({
+      confidential: Object.assign({}, prevState.confidential, {
+        error: false,
+        checked: !checked,
+      }),
+    }));
+  };
+
+  validateFields = () => {
+    let canSubmit = true;
+    const submitObject = {
+      user: {},
+    };
+
+    Object.keys(this.state).forEach(key => {
+      const input = this.state[key];
+      if (key === 'car') {
+        if (!input.complete) {
+          canSubmit = false;
+          return;
+        }
+        submitObject[key] = input.value;
+        return;
+      }
+      if (key === 'confidential') {
+        if (input.error) {
+          canSubmit = false;
+        }
+        if (!input.checked) {
+          canSubmit = false;
+          this.setState({
+            [`${key}`]: Object.assign({}, input, {
+              error: true,
+            }),
+          });
+        }
+        return;
+      }
+      if (input.status === 'error') {
+        canSubmit = false;
+        return;
+      }
+      if ((!input.value || input.value < 0) && input.required) {
+        this.setState({
+          [`${key}`]: Object.assign({}, input, {
+            status: 'error',
+            errorText: 'Поле обязательно для заполнения!',
+          }),
+        });
+        canSubmit = false;
+        return;
+      }
+      if (key === 'birthday') {
+        submitObject.user[key] = input.value.replace(/(\d{2}).(\d{2}).(\d{4})/, '$3-$2-$1');
+        return;
+      }
+      if (key === 'phone') {
+        submitObject.user.login = `7${input.value}`;
+        return;
+      }
+      submitObject.user[key] = input.value;
+    });
+
+    return canSubmit && submitObject;
+  };
+
   handleSubmitForm = () => {
-    // alert('submit');
+    const resultValidation = this.validateFields();
+
+    if (resultValidation) {
+      const { dispatch } = this.props;
+      dispatch(registerUser(resultValidation));
+    }
   };
 
   render() {
+    const { checked } = this.state.confidential;
+
     return (
       <View onStartShouldSetResponder={this.handleTouchOutsideCityPicker}>
-        {Object.keys(this.state).map(key => (
-          <Input
-            key={key}
-            name={key}
-            onEvent={this.handleInputBlur}
-            onFocus={this.handleInputFocus}
-            {...this.state[key]}
-          />
-        ))}
+        {Object.keys(this.state).map(key => {
+          if (key === 'confidential') {
+            return (
+              <Confidential
+                key={key}
+                {...this.state[key]}
+                onToggleStatus={this.handleToggleConfidentialStatus}
+              />
+            );
+          }
+          return (
+            <Input
+              key={key}
+              name={key}
+              onEvent={this.handleInputBlur}
+              onFocus={this.handleInputFocus}
+              {...this.state[key]}
+            />
+          );
+        })}
         <View style={globalFormStyles.buttons}>
-          <Button text="Зарегистироваться" onPress={this.handleSubmitForm} />
+          <Button disabled={!checked} text="Зарегистироваться" onPress={this.handleSubmitForm} />
           <Button isShadow text="Назад" onPress={this.handleGoToAuth} />
         </View>
       </View>

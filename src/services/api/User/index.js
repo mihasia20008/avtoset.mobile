@@ -1,4 +1,5 @@
 import login from './login';
 import restorePassword from './restorePassword';
+import register from './register';
 
-export { login, restorePassword };
+export { login, register, restorePassword };

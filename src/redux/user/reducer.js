@@ -32,8 +32,7 @@ const initialState = {
 
 export default (state = initialState, action = {}) => {
   switch (action.type) {
-    case T.USER_RESTORE_PASSWORD_FETCH:
-    case T.USER_LOGIN_FETCH: {
+    case T.USER_ACTION_FETCH: {
       return {
         ...state,
         isFetching: true,
@@ -76,6 +75,21 @@ export default (state = initialState, action = {}) => {
         errors: Object.assign({}, state.errors, { restore: '' }),
         result: Object.assign({}, state.result, { isRestore: false }),
         restoreData: Object.assign({}, initialState.restoreData),
+      };
+    }
+    case T.USER_REGISTER_ERROR: {
+      return {
+        ...state,
+        isFetching: false,
+        errors: Object.assign({}, state.errors, { sign: action.message }),
+      };
+    }
+    case T.USER_REGISTER_SUCCESS: {
+      return {
+        ...state,
+        isFetching: false,
+        userData: Object.assign({}, state.userData, action.data),
+        result: Object.assign({}, state.result, { isSign: true }),
       };
     }
     default: {

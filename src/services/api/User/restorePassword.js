@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-import { SERVER } from '../../constants';
+// import { SERVER } from '../../constants';
 
 export default async restoreData => {
   try {
     const { data } = await axios({
       method: 'POST',
-      url: `${SERVER.HOST}${SERVER.API_PATH}/forgotPassword.php`,
+      url: `https://avtoset.su/mobile_app/api/forgotPassword.php`,
       data: restoreData,
     });
     if (typeof data === 'string') {

@@ -22,11 +22,12 @@ class AuthForm extends Component {
   };
 
   state = {
-    phone: {
+    login: {
       type: 'phone',
       label: 'Номер телефона',
       value: this.props.defaultPhone || '',
       required: true,
+      returnTypingValue: true,
       status: '',
       errorText: '',
     },
@@ -41,9 +42,9 @@ class AuthForm extends Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    if (props.defaultPhone && props.defaultPhone !== state.phone.value) {
+    if (props.defaultPhone && props.defaultPhone !== state.login.value) {
       return {
-        phone: Object.assign({}, state.phone, { value: props.defaultPhone }),
+        login: Object.assign({}, state.login, { value: props.defaultPhone }),
       };
     }
     return {};
@@ -82,6 +83,10 @@ class AuthForm extends Component {
           }),
         });
         canSubmit = false;
+        return;
+      }
+      if (key === 'login') {
+        submitObject[key] = `7${input.value}`;
         return;
       }
       submitObject[key] = input.value;
