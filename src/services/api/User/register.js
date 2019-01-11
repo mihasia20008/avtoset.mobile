@@ -7,7 +7,9 @@ export default async userData => {
     const { data: response } = await axios({
       method: 'POST',
       url: `${SERVER.HOST}${SERVER.API_PATH}/users?version=${APP_VERSION}`,
-      data: userData,
+      data: {
+        data: userData,
+      },
     });
     if (typeof response === 'string') {
       throw new Error(response);

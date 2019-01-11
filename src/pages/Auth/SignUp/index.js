@@ -16,6 +16,8 @@ import Button from '../../../components/Button';
 
 import AuthForm from '../../../containers/Form/Auth';
 
+import { checkNetwork } from '../../../services/utilities';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -46,28 +48,46 @@ class SignUpPage extends Component {
     navigation.navigate('App');
   };
 
-  handleGoToRegister = () => {
+  handleGoToRegister = async () => {
     const { navigation } = this.props;
-    const resetAction = StackActions.reset({
-      index: 1,
-      actions: [
-        NavigationActions.navigate({ routeName: 'SignUp' }),
-        NavigationActions.navigate({ routeName: 'SignIn' }),
-      ],
-    });
-    navigation.dispatch(resetAction);
+    const hasNetwork = await checkNetwork();
+
+    if (hasNetwork) {
+      const resetAction = StackActions.reset({
+        index: 1,
+        actions: [
+          NavigationActions.navigate({ routeName: 'SignUp' }),
+          NavigationActions.navigate({ routeName: 'SignIn' }),
+        ],
+      });
+      navigation.dispatch(resetAction);
+    } else {
+      navigation.navigate('Offline', {
+        backPath: 'SignUp',
+        retryPath: 'SignIn',
+      });
+    }
   };
 
-  handleGoToRestorePassword = () => {
+  handleGoToRestorePassword = async () => {
     const { navigation } = this.props;
-    const resetAction = StackActions.reset({
-      index: 1,
-      actions: [
-        NavigationActions.navigate({ routeName: 'SignUp' }),
-        NavigationActions.navigate({ routeName: 'RestorePassword' }),
-      ],
-    });
-    navigation.dispatch(resetAction);
+    const hasNetwork = await checkNetwork();
+
+    if (hasNetwork) {
+      const resetAction = StackActions.reset({
+        index: 1,
+        actions: [
+          NavigationActions.navigate({ routeName: 'SignUp' }),
+          NavigationActions.navigate({ routeName: 'RestorePassword' }),
+        ],
+      });
+      navigation.dispatch(resetAction);
+    } else {
+      navigation.navigate('Offline', {
+        backPath: 'SignUp',
+        retryPath: 'RestorePassword',
+      });
+    }
   };
 
   render() {

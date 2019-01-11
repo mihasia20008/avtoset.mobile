@@ -7,6 +7,7 @@ import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 
 import { authUser } from '../../../redux/user/actions';
+import { checkNetwork } from '../../../services/utilities';
 
 import globalFormStyles from '../styles';
 
@@ -65,7 +66,7 @@ class AuthForm extends Component {
     }));
   };
 
-  handleSubmitForm = () => {
+  handleSubmitForm = async () => {
     let canSubmit = true;
     const submitObject = {};
 
@@ -93,8 +94,17 @@ class AuthForm extends Component {
     });
 
     if (canSubmit) {
-      const { dispatch } = this.props;
-      dispatch(authUser(submitObject));
+      const hasNetwork = await checkNetwork();
+      if (hasNetwork) {
+        const { dispatch } = this.props;
+        dispatch(authUser(submitObject));
+      } else {
+        // eslint-disable-next-line no-alert
+        alert(
+          'Для авторизации в приложении необходимо соединение с сетью Интернет. \n' +
+            'Проверьте наличие соединения.',
+        );
+      }
     }
   };
 

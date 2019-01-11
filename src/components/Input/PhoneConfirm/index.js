@@ -13,6 +13,7 @@ import {
   resetConfirmCode,
   resetConfirmProgress,
 } from '../../../redux/code/actions';
+import { checkNetwork } from '../../../services/utilities';
 
 class InputPhoneConfirm extends Component {
   static propTypes = {
@@ -97,17 +98,21 @@ class InputPhoneConfirm extends Component {
     dispatch(resetConfirmProgress());
   }
 
-  handleInputFocus = () => {
-    const { name, onFocus } = this.props;
-    onFocus(name);
-  };
+  handleSendConfirmCode = async () => {
+    const hasNetwork = await checkNetwork();
+    if (hasNetwork) {
+      const { isFetching, dispatch } = this.props;
+      const { value } = this.state;
 
-  handleSendConfirmCode = () => {
-    const { isFetching, dispatch } = this.props;
-    const { value } = this.state;
-
-    if (value && !isFetching) {
-      dispatch(sendConfirmCode(value));
+      if (value && !isFetching) {
+        dispatch(sendConfirmCode(value));
+      }
+    } else {
+      // eslint-disable-next-line no-alert
+      alert(
+        'Для отправки кода подтверждения необходимо соединение с сетью Интернет. \n' +
+          'Проверьте наличие соединения.',
+      );
     }
   };
 
@@ -143,14 +148,23 @@ class InputPhoneConfirm extends Component {
     });
   };
 
-  handleCodeTyping = (key, value) => {
+  handleCodeTyping = async (key, value) => {
     this.setState(prevState => ({
       [`${key}`]: Object.assign({}, prevState[key], value),
     }));
     if (value.status === 'success') {
-      const { dispatch } = this.props;
-      const { value: phone } = this.state;
-      dispatch(checkConfirmCode(phone, value.value));
+      const hasNetwork = await checkNetwork();
+      if (hasNetwork) {
+        const { dispatch } = this.props;
+        const { value: phone } = this.state;
+        dispatch(checkConfirmCode(phone, value.value));
+      } else {
+        // eslint-disable-next-line no-alert
+        alert(
+          'Для проверки кода подтверждения необходимо соединение с сетью Интернет. \n' +
+            'Проверьте наличие соединения.',
+        );
+      }
     }
   };
 
