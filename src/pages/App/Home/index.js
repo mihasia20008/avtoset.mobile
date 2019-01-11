@@ -8,16 +8,21 @@ class HomePage extends Component {
     uri: PropTypes.string,
     navigation: PropTypes.shape({
       navigate: PropTypes.func.isRequired,
+      getParam: PropTypes.func.isRequired,
     }),
   };
 
   static defaultProps = { uri: '' };
 
   componentDidMount() {
-    const { uri } = this.props;
+    const { uri, navigation } = this.props;
     Linking.canOpenURL(uri).then(supported => {
       if (supported) {
         Linking.openURL(uri);
+        const backPath = navigation.getParam('backPath');
+        if (backPath) {
+          navigation.navigate(backPath);
+        }
       } else {
         // eslint-disable-next-line no-alert
         alert(`Произошла ошибка при попытке открыть следующую страницу: ${uri}`);
