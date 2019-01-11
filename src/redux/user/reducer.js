@@ -7,7 +7,7 @@ const initialState = {
     card: '',
     cars: [],
     id: 0,
-    profile: [],
+    profile: {},
     region: {
       domain: 'https://avtoset.su',
       logo: 'default_logo',

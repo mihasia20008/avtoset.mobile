@@ -44,17 +44,17 @@ class EditForm extends Component {
       status: '',
       errorText: '',
     },
-    // location_id: {
-    //   type: 'city-picker',
-    //   label: 'Город',
-    //   displayed: this.props.profile.location_id.value,
-    //   value: -1,
-    //   required: true,
-    //   forceClose: false,
-    //   focused: false,
-    //   status: '',
-    //   errorText: '',
-    // },
+    location: {
+      type: 'city-picker',
+      label: 'Город',
+      displayed: this.props.profile.location.value || '',
+      value: this.props.profile.location.id || -1,
+      required: true,
+      forceClose: false,
+      focused: false,
+      status: '',
+      errorText: '',
+    },
     gender: {
       type: 'checkbox',
       label: 'Пол',
@@ -87,9 +87,9 @@ class EditForm extends Component {
   };
 
   handleInputFocus = name => {
-    if (name === 'location_id') {
+    if (name === 'location') {
       this.setState(prevState => ({
-        location_id: Object.assign({}, prevState.location_id, {
+        location: Object.assign({}, prevState.location, {
           forceClose: false,
           focused: true,
         }),
@@ -100,10 +100,10 @@ class EditForm extends Component {
   };
 
   handleTouchOutsideCityPicker = () => {
-    const { focused } = this.state.location_id;
+    const { focused } = this.state.location;
     if (focused) {
       this.setState(prevState => ({
-        location_id: Object.assign({}, prevState.location_id, {
+        location: Object.assign({}, prevState.location, {
           forceClose: true,
           focused: false,
         }),
@@ -135,6 +135,10 @@ class EditForm extends Component {
       }
       if (key === 'birthday') {
         submitObject.user[key] = input.value.replace(/(\d{2}).(\d{2}).(\d{4})/, '$3-$2-$1');
+        return;
+      }
+      if (key === 'location') {
+        submitObject.user.location_id = input.value;
         return;
       }
       submitObject.user[key] = input.value;

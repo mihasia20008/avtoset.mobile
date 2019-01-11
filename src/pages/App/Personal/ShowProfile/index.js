@@ -25,11 +25,10 @@ const styles = StyleSheet.create({
   carList: {
     marginTop: 30,
   },
-  firstButton: {
+  buttonWithNoMargin: {
     marginTop: 0,
   },
   lastButton: {
-    marginTop: 0,
     paddingBottom: 30,
   },
 });
@@ -112,7 +111,7 @@ class ProfilePage extends Component {
               value={profile[key].value}
             />
           ))}
-          <View style={[globalFormStyles.buttons, styles.firstButton]}>
+          <View style={[globalFormStyles.buttons, styles.buttonWithNoMargin]}>
             <Button text="Изменить личные данные" onPress={this.handleGoToEdit} />
           </View>
           <View style={globalFormStyles.buttons}>
@@ -130,7 +129,14 @@ class ProfilePage extends Component {
               ))}
             </View>
           ))}
-          <View style={[globalFormStyles.buttons, styles.lastButton]}>
+          <View
+            style={[
+              globalFormStyles.buttons,
+              styles.lastButton,
+              cars.length ? styles.buttonWithNoMargin : '',
+            ]}
+            // eslint-disable-next-line prettier/prettier
+          >
             <Button isEmpty text="Выход" onPress={this.handleLogoutPress} />
           </View>
         </ScrollView>
