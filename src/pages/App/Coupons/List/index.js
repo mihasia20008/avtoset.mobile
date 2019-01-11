@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import PageTitle from '../../../../components/PageTitle';
 import CouponCard from '../../../../components/CouponCard';
 
+import { fetchCouponsList, selectCoupon } from '../../../../redux/coupons/actions';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -36,15 +38,22 @@ const styles = StyleSheet.create({
 
 class CouponsList extends Component {
   static propTypes = {
+    id: PropTypes.number.isRequired,
     list: PropTypes.array.isRequired,
     navigation: PropTypes.shape({
       navigate: PropTypes.func.isRequired,
     }),
+    dispatch: PropTypes.func.isRequired,
   };
 
-  handleCouponClick = () => {
-    // console.log(index);
-    const { navigation } = this.props;
+  componentDidMount() {
+    const { id, dispatch } = this.props;
+    dispatch(fetchCouponsList(id));
+  }
+
+  handleCouponClick = index => {
+    const { navigation, dispatch } = this.props;
+    dispatch(selectCoupon(index));
     navigation.navigate('CouponPage');
   };
 
@@ -93,8 +102,9 @@ class CouponsList extends Component {
   }
 }
 
-const mapStateToProps = ({ Coupons }) => {
+const mapStateToProps = ({ User, Coupons }) => {
   return {
+    id: User.userData.id,
     list: Coupons.list,
   };
 };

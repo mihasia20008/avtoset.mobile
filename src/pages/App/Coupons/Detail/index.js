@@ -7,6 +7,8 @@ import PageTitle from '../../../../components/PageTitle';
 import InfoBlock from '../../../../components/InfoBlock';
 import BarcodeBlock from '../../../../components/BarcodeBlock';
 
+import { closeSelectCoupon } from '../../../../redux/coupons/actions';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -69,7 +71,13 @@ class CouponDetail extends Component {
     barcode: PropTypes.string.isRequired,
     discount: PropTypes.string.isRequired,
     image: PropTypes.string.isRequired,
+    dispatch: PropTypes.func.isRequired,
   };
+
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch(closeSelectCoupon());
+  }
 
   render() {
     const { name, barcode, discount, image } = this.props;
@@ -104,11 +112,12 @@ class CouponDetail extends Component {
 }
 
 const mapStateToProps = ({ Coupons }) => {
+  const item = Coupons.list[Coupons.active];
   return {
-    barcode: Coupons.list[0].barcode,
-    discount: Coupons.list[0].offer,
-    name: Coupons.list[0].name,
-    image: Coupons.list[0].image_url,
+    barcode: item.barcode,
+    discount: item.offer,
+    name: item.name,
+    image: item.image_url,
   };
 };
 
