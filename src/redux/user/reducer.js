@@ -92,6 +92,12 @@ export default (state = initialState, action = {}) => {
         result: Object.assign({}, state.result, { isSign: true }),
       };
     }
+    case T.USER_GET_LOCAL_DATA: {
+      return {
+        ...state,
+        userData: Object.assign({}, state.userData, action.data),
+      };
+    }
     default: {
       return { ...state };
     }

@@ -31,6 +31,11 @@ class SignInPage extends Component {
     }),
   };
 
+  handleGoToApp = () => {
+    const { navigation } = this.props;
+    navigation.navigate('App');
+  };
+
   handleBackPress = () => {
     const { navigation } = this.props;
     const resetAction = StackActions.reset({
@@ -66,6 +71,7 @@ class SignInPage extends Component {
               <RegisterForm
                 onRepeatPhone={this.handleRepeatPhone}
                 onGoToAuth={this.handleBackPress}
+                onSuccessSign={this.handleGoToApp}
               />
             </SignBlock>
           </ScrollView>

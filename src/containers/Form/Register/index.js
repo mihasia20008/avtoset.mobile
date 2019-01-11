@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
@@ -12,6 +12,9 @@ import { registerUser } from '../../../redux/user/actions';
 
 class RegisterForm extends Component {
   static propTypes = {
+    isSign: PropTypes.bool.isRequired,
+    errorText: PropTypes.string.isRequired,
+    onSuccessSign: PropTypes.func.isRequired,
     onRepeatPhone: PropTypes.func.isRequired,
     onGoToAuth: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -117,6 +120,15 @@ class RegisterForm extends Component {
       }, {});
     }
     return {};
+  }
+
+  componentDidUpdate(prevProps) {
+    const { isSign: nowSignStatus, onSuccessSign } = this.props;
+    const { isSign: prevSignStatus } = prevProps;
+
+    if (nowSignStatus && !prevSignStatus) {
+      onSuccessSign();
+    }
   }
 
   handleGoToAuth = () => {
@@ -238,7 +250,7 @@ class RegisterForm extends Component {
     }));
   };
 
-  validateFields = () => {
+  validateFields = checkConfirm => {
     let canSubmit = true;
     const submitObject = {
       user: {},
@@ -258,7 +270,7 @@ class RegisterForm extends Component {
         if (input.error) {
           canSubmit = false;
         }
-        if (!input.checked) {
+        if (checkConfirm && !input.checked) {
           canSubmit = false;
           this.setState({
             [`${key}`]: Object.assign({}, input, {
@@ -293,11 +305,11 @@ class RegisterForm extends Component {
       submitObject.user[key] = input.value;
     });
 
-    return canSubmit && submitObject;
+    return canSubmit ? submitObject : canSubmit;
   };
 
   handleSubmitForm = () => {
-    const resultValidation = this.validateFields();
+    const resultValidation = this.validateFields(true);
 
     if (resultValidation) {
       const { dispatch } = this.props;
@@ -307,6 +319,7 @@ class RegisterForm extends Component {
 
   render() {
     const { checked } = this.state.confidential;
+    const { errorText } = this.props;
 
     return (
       <View onStartShouldSetResponder={this.handleTouchOutsideCityPicker}>
@@ -330,6 +343,7 @@ class RegisterForm extends Component {
             />
           );
         })}
+        {errorText ? <Text style={globalFormStyles.errorText}>{errorText}</Text> : null}
         <View style={globalFormStyles.buttons}>
           <Button disabled={!checked} text="Зарегистироваться" onPress={this.handleSubmitForm} />
           <Button isShadow text="Назад" onPress={this.handleGoToAuth} />
@@ -339,8 +353,10 @@ class RegisterForm extends Component {
   }
 }
 
-const mapStateToProps = ({ PhoneConfirm }) => {
+const mapStateToProps = ({ User, PhoneConfirm }) => {
   return {
+    isSign: User.result.isSign,
+    errorText: User.errors.sign,
     confirmPhoneStatus: PhoneConfirm.status,
   };
 };

@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, AsyncStorage } from 'react-native';
+import { connect } from 'react-redux';
 
 import Spinner from '../../components/Spinner';
+
+import { getDataFromAsyncStorage } from '../../redux/user/actions';
 
 const styles = StyleSheet.create({
   container: {
@@ -36,14 +39,18 @@ class LoadingPage extends Component {
   };
 
   async componentDidMount() {
-    const { navigation } = this.props;
+    const { navigation, dispatch } = this.props;
     navigation.navigate('SignUp');
-    // const token = await AsyncStorage.getItem('authToken');
-    // if (token) {
-    //   navigation.navigate('App');
-    // } else {
-    //   navigation.navigate('Auth');
-    // }
+    const token = await AsyncStorage.getItem('authToken');
+    if (token) {
+      const id = await AsyncStorage.getItem('id');
+      const jsonData = await AsyncStorage.getItem('userData');
+      const userData = await JSON.parse(jsonData);
+      dispatch(getDataFromAsyncStorage({ id: +id, authToken: token, ...userData }));
+      navigation.navigate('App');
+    } else {
+      navigation.navigate('Auth');
+    }
   }
 
   render() {
@@ -60,4 +67,4 @@ class LoadingPage extends Component {
   }
 }
 
-export default LoadingPage;
+export default connect()(LoadingPage);

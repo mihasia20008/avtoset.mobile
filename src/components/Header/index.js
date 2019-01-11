@@ -37,13 +37,12 @@ class Header extends Component {
   };
 
   static getImage(logo) {
-    if (/:\/\//.test(logo)) {
+    if (logo === 'default_logo') {
       return (
         <Image
           style={styles.logo}
-          source={{
-            uri: logo,
-          }}
+          // eslint-disable-next-line global-require
+          source={require('./images/logo.png')}
           resizeMode="contain"
         />
       );
@@ -51,8 +50,9 @@ class Header extends Component {
     return (
       <Image
         style={styles.logo}
-        // eslint-disable-next-line global-require
-        source={require('./images/logo.png')}
+        source={{
+          uri: `https://avtoset.su${logo}`,
+        }}
         resizeMode="contain"
       />
     );
