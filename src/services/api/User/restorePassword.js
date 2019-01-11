@@ -1,21 +1,18 @@
 import axios from 'axios';
 
-// import { SERVER } from '../../constants';
+import { SERVER, APP_VERSION } from '../../constants';
 
-export default async restoreData => {
+export default async phone => {
   try {
-    const { data } = await axios({
+    const { data: response } = await axios({
       method: 'POST',
-      url: `https://avtoset.su/mobile_app/api/forgotPassword.php`,
-      data: restoreData,
+      url: `${SERVER.HOST}${SERVER.API_PATH}/auth/restore/sms/${phone}?version=${APP_VERSION}`,
     });
-    if (typeof data === 'string') {
-      throw new Error(data);
+    if (typeof response === 'string') {
+      throw new Error(response);
     }
-    const { status, ...rest } = data;
     return {
-      isSuccess: status === 'success',
-      ...rest,
+      isSuccess: true,
     };
   } catch (err) {
     return {

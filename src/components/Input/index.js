@@ -10,6 +10,7 @@ import InputCityPicker from './CityPicker';
 import InputDatePicker from './DatePicker';
 import InputCarPicker from './CarPicker';
 import Checkbox from './Checkbox';
+import InputDisabledText from './DisabledText';
 
 class Input extends Component {
   static propTypes = {
@@ -45,6 +46,9 @@ class Input extends Component {
       }
       case 'checkbox': {
         return <Checkbox {...rest} />;
+      }
+      case 'disabled-text': {
+        return <InputDisabledText {...rest} />;
       }
       default: {
         return null;

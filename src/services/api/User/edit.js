@@ -2,23 +2,23 @@ import axios from 'axios';
 
 import { APP_VERSION, SERVER } from '../../constants';
 
-export default async authData => {
+export default async (userId, userData) => {
   try {
     const { data: response } = await axios({
-      method: 'POST',
-      url: `${SERVER.HOST}${SERVER.API_PATH}/auth/login?version=${APP_VERSION}`,
-      data: authData,
+      method: 'PATCH',
+      url: `${SERVER.HOST}${SERVER.API_PATH}/user/${userId}?version=${APP_VERSION}`,
+      data: {
+        data: userData,
+      },
     });
     if (typeof response === 'string') {
       throw new Error(response);
     }
     const {
-      meta: { access_token: authToken },
       data: { region, ...rest },
     } = response;
     return {
       isSuccess: true,
-      authToken,
       region: {
         domain: region.domain_url,
         logo: region.logo_url,
@@ -27,17 +27,11 @@ export default async authData => {
       ...rest,
     };
   } catch (err) {
-    if (err.response.status === 400) {
-      return {
-        isSuccess: false,
-        message: 'Неверная пара логин/пароль',
-      };
-    }
     // TODO обработка ошибок сервера
     return {
       isSuccess: false,
       needLog: true,
-      message: 'Ошибка выполнения процесса авторизации',
+      message: 'Ошибка выполнения процесса обновления данных пользователя',
       forDevelopers: err.message,
     };
   }

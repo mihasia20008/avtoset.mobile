@@ -53,7 +53,6 @@ class RestorePasswordForm extends Component {
 
   handleSubmitForm = () => {
     let canSubmit = true;
-    const submitObject = {};
 
     Object.keys(this.state).forEach(key => {
       const input = this.state[key];
@@ -69,14 +68,13 @@ class RestorePasswordForm extends Component {
           }),
         });
         canSubmit = false;
-        return;
       }
-      submitObject[key] = input.value;
     });
 
     if (canSubmit) {
       const { dispatch } = this.props;
-      dispatch(restorePassword(submitObject));
+      const { value } = this.state.phone;
+      dispatch(restorePassword(value));
     }
   };
 

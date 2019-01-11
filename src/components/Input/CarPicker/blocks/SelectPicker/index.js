@@ -12,7 +12,7 @@ class SelectPicker extends Component {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
-    value: PropTypes.oneOfType([PropTypes.oneOf(null), PropTypes.string]),
+    value: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.number]),
     values: PropTypes.array.isRequired,
     placeholder: PropTypes.string.isRequired,
     errorText: PropTypes.string.isRequired,
