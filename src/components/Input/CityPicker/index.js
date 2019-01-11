@@ -33,11 +33,11 @@ const styles = StyleSheet.create({
 
 class InputCityPicker extends Component {
   static propTypes = {
-    id: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
+    displayed: PropTypes.string.isRequired,
     errorText: PropTypes.string.isRequired,
     required: PropTypes.bool.isRequired,
     editable: PropTypes.bool,
@@ -52,7 +52,7 @@ class InputCityPicker extends Component {
   static defaultProps = { editable: true };
 
   state = {
-    value: this.props.value,
+    displayed: this.props.displayed,
     open: false,
     // eslint-disable-next-line react/no-unused-state
     needFetch: false,
@@ -63,17 +63,17 @@ class InputCityPicker extends Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    const { value: propsValue, forceClose, isFetching, dispatch } = props;
-    const { needClearField, value: stateValue, open, needFetch, prevFetchStatus } = state;
+    const { displayed: propsDisplayed, forceClose, isFetching, dispatch } = props;
+    const { needClearField, displayed: stateDisplayed, open, needFetch, prevFetchStatus } = state;
     if (needClearField) {
       return {
-        value: '',
+        displayed: '',
         needClearField: false,
       };
     }
-    if (propsValue.search(stateValue) !== -1) {
+    if (propsDisplayed.search(stateDisplayed) !== -1) {
       return {
-        value: propsValue,
+        displayed: propsDisplayed,
       };
     }
     if (forceClose && open) {
@@ -82,7 +82,7 @@ class InputCityPicker extends Component {
       };
     }
     if (needFetch && prevFetchStatus && !isFetching) {
-      dispatch(fetchCities(stateValue));
+      dispatch(fetchCities(stateDisplayed));
       return {
         needFetch: false,
         prevFetchStatus: isFetching,
@@ -99,8 +99,8 @@ class InputCityPicker extends Component {
       onEvent(name, {
         status: 'error',
         errorText: 'Поле обязательно для заполнения!',
-        id: -1,
-        value: '',
+        value: -1,
+        displayed: '',
       });
       dispatch(clearCitiesList());
     }
@@ -118,8 +118,8 @@ class InputCityPicker extends Component {
     onEvent(name, {
       status: '',
       errorText: '',
-      id: -1,
-      value: '',
+      value: -1,
+      displayed: '',
     });
     onFocus(name);
   };
@@ -131,26 +131,27 @@ class InputCityPicker extends Component {
       onEvent(name, {
         status: '',
         errorText: '',
-        value: '',
+        value: -1,
+        displayed: '',
       });
     }
     if (isFetching) {
       // eslint-disable-next-line react/no-unused-state
-      this.setState({ value, needFetch: true });
+      this.setState({ displayed: value, needFetch: true });
       return;
     }
-    this.setState({ value });
+    this.setState({ displayed: value });
     if (value.length > 2) {
       dispatch(fetchCities(value));
     }
   };
 
-  handleSelectItem = (id, value) => {
+  handleSelectItem = (value, displayed) => {
     const { name, onEvent, dispatch } = this.props;
     onEvent(name, {
       status: 'success',
       errorText: '',
-      id,
+      displayed,
       value,
       focused: false,
     });
@@ -179,9 +180,9 @@ class InputCityPicker extends Component {
   };
 
   renderCityList() {
-    const { open, value } = this.state;
+    const { open, displayed } = this.state;
 
-    if (open && value.length > 2) {
+    if (open && displayed.length > 2) {
       return <View style={styles.cityList}>{this.renderCityItems()}</View>;
     }
 
@@ -190,7 +191,7 @@ class InputCityPicker extends Component {
 
   render() {
     const { label, required, editable, status, errorText } = this.props;
-    const { value } = this.state;
+    const { displayed } = this.state;
 
     return (
       <View style={[globalStyles.container, styles.container]}>
@@ -203,7 +204,7 @@ class InputCityPicker extends Component {
             style={globalStyles.input}
             onFocus={this.handleFocus}
             onChangeText={this.handleChangeText}
-            value={value}
+            value={displayed}
             editable={editable}
             selectTextOnFocus={editable}
             autoCorrect={false}

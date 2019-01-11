@@ -16,21 +16,21 @@ class RegisterForm extends Component {
   };
 
   state = {
-    // phone: {
-    //   type: 'phone-confirm',
-    //   label: 'Номер телефона',
-    //   value: '',
-    //   required: true,
-    //   editable: true,
-    //   status: '',
-    //   errorText: '',
-    // },
+    phone: {
+      type: 'phone-confirm',
+      label: 'Номер телефона',
+      value: '',
+      required: true,
+      editable: true,
+      status: '',
+      errorText: '',
+    },
     name: {
       type: 'name',
       label: 'Фамилия Имя Отчество',
       value: '',
       required: true,
-      // editable: false,
+      editable: false,
       status: '',
       errorText: '',
     },
@@ -39,7 +39,7 @@ class RegisterForm extends Component {
       label: 'E-mail',
       value: '',
       required: true,
-      // editable: false,
+      editable: false,
       status: '',
       errorText: '',
     },
@@ -48,28 +48,16 @@ class RegisterForm extends Component {
       label: 'Пароль',
       value: '',
       required: true,
-      // editable: false,
+      editable: false,
       status: '',
       errorText: '',
     },
-    confirmPassword: {
+    confirm_password: {
       type: 'password',
       label: 'Подтверждение пароля',
       value: '',
       required: true,
-      // editable: false,
-      status: '',
-      errorText: '',
-    },
-    location: {
-      type: 'city-picker',
-      label: 'Город',
-      id: -1,
-      value: '',
-      required: true,
-      // editable: false,
-      forceClose: false,
-      focused: false,
+      editable: false,
       status: '',
       errorText: '',
     },
@@ -78,7 +66,19 @@ class RegisterForm extends Component {
       label: 'Дата рождения',
       value: '',
       required: true,
-      // editable: false,
+      editable: false,
+      status: '',
+      errorText: '',
+    },
+    location_id: {
+      type: 'city-picker',
+      label: 'Город',
+      displayed: '',
+      value: -1,
+      required: true,
+      editable: false,
+      forceClose: false,
+      focused: false,
       status: '',
       errorText: '',
     },
@@ -88,18 +88,16 @@ class RegisterForm extends Component {
       value: '',
       values: [{ text: 'Мужской', value: 'M' }, { text: 'Женский', value: 'F' }],
       required: true,
-      // editable: false,
+      editable: false,
       status: '',
       errorText: '',
     },
     car: {
       type: 'car-picker',
-      value: '',
+      value: {},
       required: true,
-      // editable: false,
+      editable: false,
       complete: false,
-      status: '',
-      errorText: '',
     },
   };
 
@@ -120,33 +118,37 @@ class RegisterForm extends Component {
 
   handleInputBlur = (key, value, phoneConfirmStatus) => {
     const { password } = this.state;
-    if (key === 'confirmPassword' && value.value !== password.value) {
-      this.setState(prevState => ({
-        confirmPassword: Object.assign({}, prevState.confirmPassword, {
-          status: 'error',
-          errorText: 'Пароли не совпадают!',
-        }),
-      }));
-      return;
+
+    switch (true) {
+      case key === 'confirm_password' && value.value !== password.value: {
+        this.setState(prevState => ({
+          confirm_password: Object.assign({}, prevState.confirm_password, {
+            status: 'error',
+            errorText: 'Пароли не совпадают!',
+          }),
+        }));
+        return;
+      }
+      case key === 'phone' && phoneConfirmStatus === 1: {
+        const { onRepeatPhone } = this.props;
+        onRepeatPhone({
+          phone: value.value,
+          message: 'Пользователь с таким номером телефона существует.',
+        });
+        return;
+      }
+      default: {
+        this.setState(prevState => ({
+          [`${key}`]: Object.assign({}, prevState[key], value),
+        }));
+      }
     }
 
-    this.setState(prevState => ({
-      [`${key}`]: Object.assign({}, prevState[key], value),
-    }));
-
-    if (key === 'phone' && phoneConfirmStatus === 1) {
-      const { onRepeatPhone } = this.props;
-      onRepeatPhone({
-        phone: value.value,
-        message: 'Пользователь с таким номером телефона существует.',
-      });
-    }
-
-    const { confirmPassword } = this.state;
+    const { confirm_password: confirmPassword } = this.state;
     if (key === 'password' && confirmPassword.value !== '') {
       if ((value.value === '' && this.state[key].required) || value.value.length < 6) {
         this.setState(prevState => ({
-          confirmPassword: Object.assign({}, prevState.confirmPassword, {
+          confirm_password: Object.assign({}, prevState.confirm_password, {
             status: '',
             errorText: '',
           }),
@@ -155,7 +157,7 @@ class RegisterForm extends Component {
       }
       if (value.value !== confirmPassword.value) {
         this.setState(prevState => ({
-          confirmPassword: Object.assign({}, prevState.confirmPassword, {
+          confirm_password: Object.assign({}, prevState.confirm_password, {
             status: 'error',
             errorText: 'Пароли не совпадают!',
           }),
@@ -163,7 +165,7 @@ class RegisterForm extends Component {
         return;
       }
       this.setState(prevState => ({
-        confirmPassword: Object.assign({}, prevState.confirmPassword, {
+        confirm_password: Object.assign({}, prevState.confirm_password, {
           status: 'success',
           errorText: '',
         }),
@@ -172,9 +174,9 @@ class RegisterForm extends Component {
   };
 
   handleInputFocus = name => {
-    if (name === 'location') {
+    if (name === 'location_id') {
       this.setState(prevState => ({
-        location: Object.assign({}, prevState.location, {
+        location_id: Object.assign({}, prevState.location_id, {
           forceClose: false,
           focused: true,
         }),
@@ -185,10 +187,10 @@ class RegisterForm extends Component {
   };
 
   handleTouchOutsideCityPicker = () => {
-    const { focused } = this.state.location;
+    const { focused } = this.state.location_id;
     if (focused) {
       this.setState(prevState => ({
-        location: Object.assign({}, prevState.location, {
+        location_id: Object.assign({}, prevState.location_id, {
           forceClose: true,
           focused: false,
         }),

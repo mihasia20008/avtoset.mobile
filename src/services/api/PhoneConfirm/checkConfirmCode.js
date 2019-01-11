@@ -1,12 +1,14 @@
 import axios from 'axios';
 
-import { SERVER } from '../../constants';
+import { APP_VERSION, SERVER } from '../../constants';
 
 export default async (phone, code) => {
   try {
     const { data: response } = await axios({
       method: 'GET',
-      url: `${SERVER.HOST}${SERVER.API_PATH}/phone/${phone}/confirm/sms/check-code/${code}`,
+      url: `${SERVER.HOST}${
+        SERVER.API_PATH
+      }/phone/${phone}/confirm/sms/check-code/${code}?version=${APP_VERSION}`,
     });
     if (typeof response === 'string') {
       throw new Error(response);

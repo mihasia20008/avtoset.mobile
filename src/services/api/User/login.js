@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-import { SERVER } from '../../constants';
+import { APP_VERSION, SERVER } from '../../constants';
 
 export default async authData => {
   try {
     const { data: response } = await axios({
       method: 'POST',
-      url: `${SERVER.HOST}${SERVER.API_PATH}/auth/login`,
+      url: `${SERVER.HOST}${SERVER.API_PATH}/auth/login?version=${APP_VERSION}`,
       data: authData,
     });
     if (typeof response === 'string') {

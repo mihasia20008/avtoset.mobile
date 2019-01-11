@@ -1,17 +1,16 @@
 import axios from 'axios';
 
-import { SERVER } from '../constants';
+import { APP_VERSION, SERVER } from '../constants';
 
 export default async searchString => {
   try {
     const { data: response } = await axios({
       method: 'GET',
-      url: `${SERVER.HOST}${SERVER.API_PATH}/locations?q=${searchString}`,
+      url: `${SERVER.HOST}${SERVER.API_PATH}/locations?q=${searchString}&version=${APP_VERSION}`,
     });
     if (typeof response === 'string') {
       throw new Error(response);
     }
-    // console.log(response);
     const {
       data: { items: list },
     } = response;
