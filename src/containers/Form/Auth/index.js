@@ -28,7 +28,6 @@ class AuthForm extends Component {
       label: 'Номер телефона',
       value: this.props.defaultPhone || '',
       required: true,
-      returnTypingValue: true,
       status: '',
       errorText: '',
     },

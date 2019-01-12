@@ -15,14 +15,44 @@ class InputEmail extends Component {
     errorText: PropTypes.string.isRequired,
     required: PropTypes.bool.isRequired,
     editable: PropTypes.bool,
+    returnTypingValue: PropTypes.bool,
     onEvent: PropTypes.func.isRequired,
     onFocus: PropTypes.func,
   };
 
   static defaultProps = {
     editable: true,
+    returnTypingValue: true,
     onFocus: () => {},
   };
+
+  static validateValue(value, required) {
+    if (!value && required) {
+      return {
+        status: 'error',
+        errorText: 'Поле обязательно для заполнения!',
+      };
+    }
+    if (value.length > 320) {
+      return {
+        status: 'error',
+        errorText: 'Превышено максимальное количество символов!',
+      };
+    }
+    // eslint-disable-next-line max-len
+    const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!regex.test(value.toLowerCase())) {
+      return {
+        status: 'error',
+        errorText: 'Введен неверный адрес электронной почты!',
+      };
+    }
+
+    return {
+      status: 'success',
+      errorText: '',
+    };
+  }
 
   state = {
     value: this.props.value,
@@ -34,7 +64,28 @@ class InputEmail extends Component {
   };
 
   handleChangeText = value => {
-    const { name, status, onEvent } = this.props;
+    const { name, status, returnTypingValue, required, onEvent } = this.props;
+
+    this.setState({ value });
+
+    if (returnTypingValue) {
+      const validate = InputEmail.validateValue(value, required);
+      if (validate.status === 'success') {
+        onEvent(name, {
+          ...validate,
+          value,
+        });
+        return;
+      }
+      if (validate.status !== 'success' && status) {
+        onEvent(name, {
+          status: '',
+          errorText: '',
+          value: '',
+        });
+        return;
+      }
+    }
 
     if (status) {
       onEvent(name, {
@@ -43,43 +94,23 @@ class InputEmail extends Component {
         value: '',
       });
     }
-    this.setState({ value });
   };
 
   handleInputBlur = () => {
     const { value } = this.state;
     const { name, required, onEvent } = this.props;
 
-    if (value === '' && required) {
-      onEvent(name, {
-        status: 'error',
-        errorText: 'Поле обязательно для заполнения!',
-        value: '',
-      });
-      return;
-    }
-    if (value.length > 320) {
-      onEvent(name, {
-        status: 'error',
-        errorText: 'Превышено максимальное количество символов!',
-        value: '',
-      });
-      return;
-    }
-    // eslint-disable-next-line max-len
-    const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (!regex.test(value.toLowerCase())) {
-      onEvent(name, {
-        status: 'error',
-        errorText: 'Введен неверный адрес электронной почты!',
-        value: '',
-      });
-      return;
-    }
+    const validate = InputEmail.validateValue(value, required);
 
+    if (validate.status !== 'success') {
+      onEvent(name, {
+        ...validate,
+        value: '',
+      });
+      return;
+    }
     onEvent(name, {
-      status: 'success',
-      errorText: '',
+      ...validate,
       value,
     });
   };

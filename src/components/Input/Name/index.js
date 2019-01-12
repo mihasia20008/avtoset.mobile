@@ -15,14 +15,63 @@ class InputName extends Component {
     errorText: PropTypes.string.isRequired,
     required: PropTypes.bool.isRequired,
     editable: PropTypes.bool,
+    returnTypingValue: PropTypes.bool,
     onEvent: PropTypes.func.isRequired,
     onFocus: PropTypes.func,
   };
 
   static defaultProps = {
     editable: true,
+    returnTypingValue: true,
     onFocus: () => {},
   };
+
+  static validateValue(value, required) {
+    if (!value && required) {
+      return {
+        status: 'error',
+        errorText: 'Поле обязательно для заполнения!',
+      };
+    }
+
+    const item = value.split(' ');
+    if (item.length < 2) {
+      return {
+        status: 'error',
+        errorText: 'Фамилия и Имя являются обязательными!',
+      };
+    }
+    if (item[0].length < 2) {
+      return {
+        status: 'error',
+        errorText: 'Неверный ввод Фамилии!',
+      };
+    }
+    if (item[1].length < 2) {
+      return {
+        status: 'error',
+        errorText: 'Неверный ввод Имени!',
+      };
+    }
+    if (item[2] && item[2].length < 2) {
+      return {
+        status: 'error',
+        errorText: 'Неверный ввод Отчества!',
+      };
+    }
+    if (!/^[а-яА-ЯёЁ]{2,}\s[а-яА-ЯёЁ\s]{2,}$/.test(value)) {
+      return {
+        status: 'error',
+        errorText: 'Разрешен ввод только кириллических символов!',
+        value: '',
+      };
+    }
+
+    return {
+      status: 'success',
+      errorText: '',
+    };
+  }
 
   state = {
     value: this.props.value,
@@ -34,7 +83,28 @@ class InputName extends Component {
   };
 
   handleChangeText = value => {
-    const { name, status, onEvent } = this.props;
+    const { name, status, returnTypingValue, required, onEvent } = this.props;
+
+    this.setState({ value });
+
+    if (returnTypingValue) {
+      const validate = InputName.validateValue(value, required);
+      if (validate.status === 'success') {
+        onEvent(name, {
+          ...validate,
+          value,
+        });
+        return;
+      }
+      if (validate.status !== 'success' && status) {
+        onEvent(name, {
+          status: '',
+          errorText: '',
+          value: '',
+        });
+        return;
+      }
+    }
 
     if (status) {
       onEvent(name, {
@@ -43,67 +113,23 @@ class InputName extends Component {
         value: '',
       });
     }
-    this.setState({ value });
   };
 
   handleInputBlur = () => {
     const { value } = this.state;
     const { name, required, onEvent } = this.props;
 
-    if (value === '' && required) {
-      onEvent(name, {
-        status: 'error',
-        errorText: 'Поле обязательно для заполнения!',
-        value: '',
-      });
-      return;
-    }
+    const validate = InputName.validateValue(value, required);
 
-    const item = value.split(' ');
-    if (item.length < 2) {
+    if (validate.status !== 'success') {
       onEvent(name, {
-        status: 'error',
-        errorText: 'Фамилия и Имя являются обязательными!',
+        ...validate,
         value: '',
       });
       return;
     }
-    if (item[0].length < 2) {
-      onEvent(name, {
-        status: 'error',
-        errorText: 'Неверный ввод Фамилии!',
-        value: '',
-      });
-      return;
-    }
-    if (item[1].length < 2) {
-      onEvent(name, {
-        status: 'error',
-        errorText: 'Неверный ввод Имени!',
-        value: '',
-      });
-      return;
-    }
-    if (item[2] && item[2].length < 2) {
-      onEvent(name, {
-        status: 'error',
-        errorText: 'Неверный ввод Отчества!',
-        value: '',
-      });
-      return;
-    }
-    if (!/^[а-яА-ЯёЁ]{2,}\s[а-яА-ЯёЁ\s]{2,}$/.test(value)) {
-      onEvent(name, {
-        status: 'error',
-        errorText: 'Разрешен ввод только кириллических символов!',
-        value: '',
-      });
-      return;
-    }
-
     onEvent(name, {
-      status: 'success',
-      errorText: '',
+      ...validate,
       value,
     });
   };

@@ -48,12 +48,12 @@ class InputPhone extends Component {
 
   static defaultProps = {
     editable: true,
-    returnTypingValue: false,
+    returnTypingValue: true,
     onFocus: () => {},
   };
 
   static validateValue(value, required) {
-    if (value === '' && required) {
+    if (!value && required) {
       return {
         status: 'error',
         errorText: 'Поле обязательно для заполнения!',
@@ -98,13 +98,6 @@ class InputPhone extends Component {
   handleChangeText = (formatted, extracted) => {
     const { name, status, required, returnTypingValue, onEvent } = this.props;
 
-    if (status) {
-      onEvent(name, {
-        status: '',
-        errorText: '',
-        value: '',
-      });
-    }
     this.setState({ value: extracted });
 
     if (returnTypingValue) {
@@ -114,7 +107,24 @@ class InputPhone extends Component {
           ...validate,
           value: extracted,
         });
+        return;
       }
+      if (validate.status !== 'success' && status) {
+        onEvent(name, {
+          status: '',
+          errorText: '',
+          value: '',
+        });
+        return;
+      }
+    }
+
+    if (status) {
+      onEvent(name, {
+        status: '',
+        errorText: '',
+        value: '',
+      });
     }
   };
 
