@@ -48,7 +48,7 @@ class EditForm extends Component {
       type: 'city-picker',
       label: 'Город',
       displayed: this.props.profile.location.value || '',
-      value: this.props.profile.location.id || -1,
+      value: +this.props.profile.location.id || -1,
       required: true,
       forceClose: false,
       focused: false,
