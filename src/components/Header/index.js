@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, View, Image, TouchableOpacity, Linking } from 'react-native';
 
+import { SERVER } from '../../services/constants';
+
 const styles = StyleSheet.create({
   header: {
     position: 'absolute',
@@ -51,7 +53,7 @@ class Header extends Component {
       <Image
         style={styles.logo}
         source={{
-          uri: `https://avtoset.su${logo}`,
+          uri: `${SERVER.HOST}${logo}`,
         }}
         resizeMode="contain"
       />

@@ -4,6 +4,8 @@ import { StyleSheet, View, Text, Image, TouchableOpacity, Dimensions } from 'rea
 
 import { dateFormatter } from '../../services/utilities';
 
+import { SERVER } from '../../services/constants';
+
 const styles = StyleSheet.create({
   container: {
     paddingTop: 15,
@@ -106,7 +108,7 @@ class CouponCard extends Component {
           <Image
             style={styles.image}
             resizeMode="contain"
-            source={{ uri: `http://avtoset.local${image}` }}
+            source={{ uri: `${SERVER.HOST}${image}` }}
           />
           <View style={[styles.discountWrap, isActive ? '' : styles.disabledDiscountWrap]}>
             <Text style={styles.discountText} numberOfLines={1} ellipsizeMode="tail">

@@ -9,6 +9,8 @@ import BarcodeBlock from '../../../../components/BarcodeBlock';
 
 import { closeSelectCoupon } from '../../../../redux/coupons/actions';
 
+import { SERVER } from '../../../../services/constants';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -92,7 +94,7 @@ class CouponDetail extends Component {
               <Image
                 style={styles.image}
                 resizeMode="contain"
-                source={{ uri: `http://avtoset.local${image}` }}
+                source={{ uri: `${SERVER.HOST}${image}` }}
               />
             </View>
             <View style={styles.nameWrap}>
