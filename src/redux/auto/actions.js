@@ -2,10 +2,17 @@ import * as T from './actionTypes';
 
 import { getCarList } from '../../services/api';
 
-export function fetchCarList(params) {
+export function deleteUnusedFields(index) {
+  return dispatch => dispatch({ type: T.CAR_RESET_FIELDS, index });
+}
+
+export function fetchCarList(params, needDeleteFields, index) {
   return async dispatch => {
     try {
       dispatch({ type: T.CAR_GET_FETCH });
+      if (needDeleteFields) {
+        dispatch(deleteUnusedFields(index));
+      }
       const { isSuccess, ...rest } = await getCarList(params);
       if (!isSuccess) {
         dispatch({ type: T.CAR_GET_ERROR, message: rest.message });
@@ -20,10 +27,6 @@ export function fetchCarList(params) {
       dispatch({ type: T.CAR_GET_ERROR, message: 'Ошибка получения списка автомобилей' });
     }
   };
-}
-
-export function deleteUnusedFields(index) {
-  return dispatch => dispatch({ type: T.CAR_RESET_FIELDS, index });
 }
 
 export function resetAllFields() {

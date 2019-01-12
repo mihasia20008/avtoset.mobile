@@ -21,21 +21,21 @@ class RegisterForm extends Component {
   };
 
   state = {
-    phone: {
-      type: 'phone-confirm',
-      label: 'Номер телефона',
-      value: '',
-      required: true,
-      editable: true,
-      status: '',
-      errorText: '',
-    },
+    // phone: {
+    //   type: 'phone-confirm',
+    //   label: 'Номер телефона',
+    //   value: '',
+    //   required: true,
+    //   editable: true,
+    //   status: '',
+    //   errorText: '',
+    // },
     name: {
       type: 'name',
       label: 'Фамилия Имя Отчество',
       value: '',
       required: true,
-      editable: false,
+      // editable: false,
       status: '',
       errorText: '',
     },
@@ -44,7 +44,7 @@ class RegisterForm extends Component {
       label: 'E-mail',
       value: '',
       required: true,
-      editable: false,
+      // editable: false,
       status: '',
       errorText: '',
     },
@@ -53,7 +53,7 @@ class RegisterForm extends Component {
       label: 'Пароль',
       value: '',
       required: true,
-      editable: false,
+      // editable: false,
       status: '',
       errorText: '',
     },
@@ -62,7 +62,7 @@ class RegisterForm extends Component {
       label: 'Подтверждение пароля',
       value: '',
       required: true,
-      editable: false,
+      // editable: false,
       status: '',
       errorText: '',
     },
@@ -101,14 +101,15 @@ class RegisterForm extends Component {
       type: 'car-picker',
       value: {},
       required: true,
-      editable: false,
+      // editable: false,
       complete: false,
+      errorText: '',
     },
     confidential: {
       error: false,
       checked: false,
       errorText: '',
-      editable: false,
+      // editable: false,
     },
   };
 
@@ -140,21 +141,34 @@ class RegisterForm extends Component {
     const { password } = this.state;
 
     switch (true) {
-      case key === 'confirm_password' && value.value !== password.value: {
+      case key === 'confirm_password': {
+        if (password.value && value.value !== password.value) {
+          this.setState(prevState => ({
+            confirm_password: Object.assign({}, prevState.confirm_password, {
+              status: 'error',
+              errorText: 'Пароли не совпадают!',
+              value: value.value,
+            }),
+          }));
+          return;
+        }
         this.setState(prevState => ({
-          confirm_password: Object.assign({}, prevState.confirm_password, {
-            status: 'error',
-            errorText: 'Пароли не совпадают!',
-          }),
+          [`${key}`]: Object.assign({}, prevState[key], value),
         }));
         return;
       }
-      case key === 'phone' && phoneConfirmStatus === 1: {
-        const { onRepeatPhone } = this.props;
-        onRepeatPhone({
-          phone: value.value,
-          message: 'Пользователь с таким номером телефона существует.',
-        });
+      case key === 'phone': {
+        if (phoneConfirmStatus === 1) {
+          const { onRepeatPhone } = this.props;
+          onRepeatPhone({
+            phone: value.value,
+            message: 'Пользователь с таким номером телефона существует.',
+          });
+          return;
+        }
+        this.setState(prevState => ({
+          [`${key}`]: Object.assign({}, prevState[key], value),
+        }));
         return;
       }
       default: {
@@ -165,8 +179,8 @@ class RegisterForm extends Component {
     }
 
     const { confirm_password: confirmPassword } = this.state;
-    if (key === 'password' && confirmPassword.value !== '') {
-      if ((value.value === '' && this.state[key].required) || value.value.length < 6) {
+    if (key === 'password' && confirmPassword.value) {
+      if ((!value.value && this.state[key].required) || (value.value && value.value.length < 6)) {
         this.setState(prevState => ({
           confirm_password: Object.assign({}, prevState.confirm_password, {
             status: '',
@@ -175,7 +189,7 @@ class RegisterForm extends Component {
         }));
         return;
       }
-      if (value.value !== confirmPassword.value) {
+      if (confirmPassword.value && value.value !== confirmPassword.value) {
         this.setState(prevState => ({
           confirm_password: Object.assign({}, prevState.confirm_password, {
             status: 'error',
@@ -261,6 +275,11 @@ class RegisterForm extends Component {
       if (key === 'car') {
         if (!input.complete) {
           canSubmit = false;
+          this.setState({
+            [`${key}`]: Object.assign({}, input, {
+              errorText: 'Поле обязательно для заполнения!',
+            }),
+          });
           return;
         }
         submitObject[key] = input.value;

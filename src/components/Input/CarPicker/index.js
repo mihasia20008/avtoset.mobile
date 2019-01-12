@@ -10,49 +10,75 @@ import { fetchCarList, resetAllFields } from '../../../redux/auto/actions';
 class InputCarPicker extends Component {
   static propTypes = {
     name: PropTypes.string.isRequired,
+    errorText: PropTypes.string.isRequired,
     fields: PropTypes.array.isRequired,
     editable: PropTypes.bool,
     complete: PropTypes.bool.isRequired,
     relations: PropTypes.object.isRequired,
     currentStep: PropTypes.string.isRequired,
+    nextStep: PropTypes.string.isRequired,
     onEvent: PropTypes.func.isRequired,
     onFocus: PropTypes.func,
     dispatch: PropTypes.func.isRequired,
   };
 
+  static isEqual(obj1, obj2) {
+    const keys1 = Object.keys(obj1);
+    if (keys1.length !== Object.keys(obj2).length) {
+      return false;
+    }
+    let isEqual = true;
+    const keysLength = keys1.length - 1;
+    for (let i = keysLength; i >= 0; i--) {
+      const key = keys1[i];
+      if (obj1[key] !== obj2[key]) {
+        isEqual = false;
+        break;
+      }
+    }
+    return isEqual;
+  }
+
   state = {
     result: {},
     // eslint-disable-next-line react/no-unused-state
     prevStep: '',
+    // eslint-disable-next-line react/no-unused-state
+    currentStep: '',
     updatedStep: '',
     fields: {},
   };
 
   static getDerivedStateFromProps(props, state) {
-    // const { isFetching, fields, relations, dispatch } = props;
-    const { fields } = props;
-    // const { fields: stateFields, prevStep, result, updatedStep } = state;
-    const { fields: stateFields } = state;
+    const { fields: propsFields, errorText } = props;
+    const { fields: stateFields, prevStep, currentStep, result, updatedStep } = state;
 
     const updatedState = {};
 
-    // const index = Object.keys(relations).findIndex(item => item === updatedStep) + 1;
-    // if (!isFetching && updatedStep && updatedStep !== prevStep && index !== fields.length) {
-    //   dispatch(deleteUnusedFields(index));
-    //   let needResultKey = true;
-    //   updatedState.result = Object.keys(result).reduce((acc, item) => {
-    //     console.log(needResultKey, item, updatedStep);
-    //     if (needResultKey) {
-    //       needResultKey = updatedStep !== item;
-    //       return Object.assign(acc, {
-    //         [`${item}`]: result[item]
-    //       })
-    //     }
-    //   }, {});
-    // }
+    if (updatedStep && updatedStep !== prevStep && updatedStep !== currentStep) {
+      let needResultKey = true;
+      updatedState.result = Object.keys(result).reduce((acc, item) => {
+        needResultKey = updatedStep === item.split('_')[0];
+        if (needResultKey) {
+          return Object.assign(acc, {
+            [`${item}`]: result[item],
+          });
+        }
+        return acc;
+      }, {});
+    }
 
-    if (fields.length !== Object.keys(stateFields).length) {
-      updatedState.fields = fields.reduce((acc, field) => {
+    const fieldsLength = propsFields.length - 1;
+    if (propsFields.length !== Object.keys(stateFields).length || errorText) {
+      updatedState.fields = propsFields.reduce((acc, field, index) => {
+        if (errorText && fieldsLength === index) {
+          return Object.assign(acc, {
+            [`${field.id}`]: {
+              errorText,
+              status: 'error',
+            },
+          });
+        }
         if (typeof stateFields[field.id] !== 'undefined') {
           return Object.assign(acc, {
             [`${field.id}`]: stateFields[field.id],
@@ -81,22 +107,28 @@ class InputCarPicker extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { complete: prevCompleteStatus } = prevProps;
-    const { complete: nowCompleteStatus, relations, dispatch } = this.props;
+    const { complete: nowCompleteStatus, fields, relations, dispatch } = this.props;
     const { result: prevResult } = prevState;
     const { result: nowResult, updatedStep } = this.state;
 
-    if (Object.keys(prevResult).length !== Object.keys(nowResult).length) {
+    if (!InputCarPicker.isEqual(prevResult, nowResult)) {
+      const index = Object.keys(relations).findIndex(item => item === updatedStep) + 1;
       dispatch(
-        fetchCarList({
-          step: relations[updatedStep],
-          result: nowResult,
-        }),
+        fetchCarList(
+          {
+            step: relations[updatedStep],
+            result: nowResult,
+          },
+          index < fields.length,
+          index,
+        ),
       );
     }
 
     if (!prevCompleteStatus && nowCompleteStatus) {
       const { name, onEvent } = this.props;
       onEvent(name, {
+        errorText: '',
         complete: true,
         value: nowResult,
       });
@@ -117,17 +149,27 @@ class InputCarPicker extends Component {
   }
 
   handleSelectItem = (key, { value, ...rest }) => {
-    const { currentStep } = this.props;
-    this.setState(prevState => ({
-      prevStep: currentStep,
-      updatedStep: key.split('_')[0],
-      result: value
-        ? Object.assign({}, prevState.result, { [`${key}`]: +value })
-        : prevState.result,
-      fields: Object.assign({}, prevState.fields, {
-        [`${key}`]: Object.assign({}, prevState.fields[key], rest),
-      }),
-    }));
+    const { currentStep, nextStep, name, errorText, onEvent } = this.props;
+    const { result } = this.state;
+
+    if (result[key] !== +value) {
+      this.setState(prevState => ({
+        prevStep: currentStep,
+        currentStep: nextStep,
+        updatedStep: key.split('_')[0],
+        result: value
+          ? Object.assign({}, prevState.result, { [`${key}`]: +value })
+          : prevState.result,
+        fields: Object.assign({}, prevState.fields, {
+          [`${key}`]: Object.assign({}, prevState.fields[key], rest),
+        }),
+      }));
+      if (errorText) {
+        onEvent(name, {
+          errorText: '',
+        });
+      }
+    }
   };
 
   render() {
@@ -165,9 +207,9 @@ class InputCarPicker extends Component {
 
 const mapStateToProps = ({ CarPicker }) => {
   return {
-    isFetching: CarPicker.isFetching,
     complete: CarPicker.complete,
     currentStep: CarPicker.currentStep,
+    nextStep: CarPicker.nextStep,
     fields: CarPicker.fields,
     relations: CarPicker.relations,
   };

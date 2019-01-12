@@ -4,6 +4,7 @@ const initialState = {
   isFetching: false,
   complete: false,
   currentStep: '',
+  nextStep: '',
   fields: [],
   relations: {},
 };
@@ -29,6 +30,7 @@ export default (state = initialState, action = {}) => {
         isFetching: false,
         complete: false,
         currentStep,
+        nextStep,
         fields: state.fields.concat(fields),
         relations: Object.assign({}, state.relations, { [`${currentStep}`]: nextStep }),
       };
