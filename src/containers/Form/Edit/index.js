@@ -7,7 +7,7 @@ import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 
 import globalFormStyles from '../styles';
-import { editUser } from '../../../redux/user/actions';
+import { editUser, resetEditData } from '../../../redux/user/actions';
 
 class EditForm extends Component {
   static propTypes = {
@@ -67,17 +67,19 @@ class EditForm extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    const { isEdited: nowEditedStatus, onSuccessEdit } = this.props;
+    const { isEdited: nowEditedStatus, onSuccessEdit, dispatch } = this.props;
     const { isEdited: prevEditedStatus } = prevProps;
 
     if (nowEditedStatus && !prevEditedStatus) {
       onSuccessEdit();
+      dispatch(resetEditData());
     }
   }
 
   handleGoToPersonal = () => {
-    const { onGoToPersonal } = this.props;
+    const { onGoToPersonal, dispatch } = this.props;
     onGoToPersonal();
+    dispatch(resetEditData());
   };
 
   handleInputBlur = (key, value) => {

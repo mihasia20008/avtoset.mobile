@@ -69,6 +69,10 @@ export function editUser(userId, userData) {
   };
 }
 
+export function resetEditData() {
+  return dispatch => dispatch({ type: T.USER_EDIT_RESET });
+}
+
 export function restorePassword(phone) {
   return async dispatch => {
     try {
@@ -94,7 +98,7 @@ export function restorePassword(phone) {
   };
 }
 
-export function resetRestoreData() {
+export function resetRestorePasswordData() {
   return dispatch => dispatch({ type: T.USER_RESTORE_PASSWORD_RESET });
 }
 
@@ -115,6 +119,10 @@ export function changePassword(id, userData) {
       });
     }
   };
+}
+
+export function resetChangePasswordData() {
+  return dispatch => dispatch({ type: T.USER_CHANGE_PASSWORD_RESET });
 }
 
 export function logoutFromAccount() {

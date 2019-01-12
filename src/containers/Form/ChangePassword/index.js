@@ -7,7 +7,7 @@ import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 
 import globalFormStyles from '../styles';
-import { changePassword } from '../../../redux/user/actions';
+import { changePassword, resetChangePasswordData } from '../../../redux/user/actions';
 
 class ChangePasswordForm extends Component {
   static propTypes = {
@@ -39,17 +39,19 @@ class ChangePasswordForm extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    const { isChange: nowChangeStatus, onSuccessChange } = this.props;
+    const { isChange: nowChangeStatus, onSuccessChange, dispatch } = this.props;
     const { isChange: prevChangeStatus } = prevProps;
 
     if (nowChangeStatus && !prevChangeStatus) {
       onSuccessChange();
+      dispatch(resetChangePasswordData());
     }
   }
 
   handleGoToProfile = () => {
-    const { onGoToProfile } = this.props;
+    const { onGoToProfile, dispatch } = this.props;
     onGoToProfile();
+    dispatch(resetChangePasswordData());
   };
 
   handleInputBlur = (key, value) => {

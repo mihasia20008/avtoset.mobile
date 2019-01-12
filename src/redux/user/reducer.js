@@ -87,6 +87,13 @@ export default (state = initialState, action = {}) => {
         result: Object.assign({}, state.result, { isEdited: true }),
       };
     }
+    case T.USER_EDIT_RESET: {
+      return {
+        ...state,
+        errors: Object.assign({}, state.errors, { edit: '' }),
+        result: Object.assign({}, state.result, { isEdited: false }),
+      };
+    }
     case T.USER_RESTORE_PASSWORD_ERROR: {
       return {
         ...state,
@@ -123,6 +130,13 @@ export default (state = initialState, action = {}) => {
         ...state,
         isFetching: false,
         result: Object.assign({}, state.result, { isChange: true }),
+      };
+    }
+    case T.USER_CHANGE_PASSWORD_RESET: {
+      return {
+        ...state,
+        errors: Object.assign({}, state.errors, { change: '' }),
+        result: Object.assign({}, state.result, { isChange: false }),
       };
     }
     case T.USER_GET_LOCAL_DATA: {

@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 
-import { restorePassword, resetRestoreData } from '../../../redux/user/actions';
+import { restorePassword, resetRestorePasswordData } from '../../../redux/user/actions';
 
 import globalFormStyles from '../styles';
 
@@ -31,7 +31,6 @@ class RestorePasswordForm extends Component {
       required: true,
       status: '',
       errorText: '',
-      returnTypingValue: true,
     },
   };
 
@@ -41,7 +40,7 @@ class RestorePasswordForm extends Component {
 
     if (nowRestoreStatus && !prevRestoreStatus) {
       onSuccessRestore(restoreData);
-      dispatch(resetRestoreData());
+      dispatch(resetRestorePasswordData());
     }
   }
 
@@ -81,7 +80,7 @@ class RestorePasswordForm extends Component {
   handleGoToAuth = () => {
     const { onGoToAuth, dispatch } = this.props;
     onGoToAuth();
-    dispatch(resetRestoreData());
+    dispatch(resetRestorePasswordData());
   };
 
   render() {
