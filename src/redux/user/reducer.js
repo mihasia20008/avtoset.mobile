@@ -94,6 +94,12 @@ export default (state = initialState, action = {}) => {
         result: Object.assign({}, state.result, { isEdited: false }),
       };
     }
+    case T.USER_UPDATE_SUCCESS: {
+      return {
+        ...state,
+        userData: Object.assign({}, state.userData, action.data),
+      };
+    }
     case T.USER_RESTORE_PASSWORD_ERROR: {
       return {
         ...state,

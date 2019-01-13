@@ -7,6 +7,8 @@ import PageTitle from '../../../../components/PageTitle';
 import CouponCard from '../../../../components/CouponCard';
 
 import { fetchCouponsList, selectCoupon } from '../../../../redux/coupons/actions';
+import { updateData } from '../../../../redux/user/actions';
+import { checkNetwork } from '../../../../services/utilities';
 
 const styles = StyleSheet.create({
   container: {
@@ -42,13 +44,29 @@ class CouponsList extends Component {
     list: PropTypes.array.isRequired,
     navigation: PropTypes.shape({
       navigate: PropTypes.func.isRequired,
+      getParam: PropTypes.func.isRequired,
+      addListener: PropTypes.func.isRequired,
     }),
     dispatch: PropTypes.func.isRequired,
   };
 
-  componentDidMount() {
-    const { id, dispatch } = this.props;
-    dispatch(fetchCouponsList(id));
+  willFocusSubscription = this.props.navigation.addListener('willFocus', async () => {
+    const hasNetwork = await checkNetwork();
+    if (hasNetwork) {
+      const { id, dispatch } = this.props;
+      dispatch(fetchCouponsList(id));
+      dispatch(updateData(id));
+    } else {
+      const { navigation } = this.props;
+      navigation.navigate('Offline', {
+        backPath: 'Discount',
+        retryPath: 'Coupons',
+      });
+    }
+  });
+
+  componentWillUnmount() {
+    this.willFocusSubscription.remove();
   }
 
   handleCouponClick = index => {

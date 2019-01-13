@@ -10,7 +10,7 @@ import Input from '../../../../components/Input';
 
 import globalFormStyles from '../../../../containers/Form/styles';
 
-import { logoutFromAccount } from '../../../../redux/user/actions';
+import { logoutFromAccount, updateData } from '../../../../redux/user/actions';
 
 import { checkNetwork } from '../../../../services/utilities';
 
@@ -44,8 +44,21 @@ class ProfilePage extends Component {
       navigate: PropTypes.func.isRequired,
       getParam: PropTypes.func.isRequired,
       goBack: PropTypes.func.isRequired,
+      addListener: PropTypes.func.isRequired,
     }),
   };
+
+  willFocusSubscription = this.props.navigation.addListener('willFocus', async () => {
+    const hasNetwork = await checkNetwork();
+    if (hasNetwork) {
+      const { id, dispatch } = this.props;
+      dispatch(updateData(id));
+    }
+  });
+
+  componentWillUnmount() {
+    this.willFocusSubscription.remove();
+  }
 
   handleGoToEdit = async () => {
     const { navigation } = this.props;
@@ -150,6 +163,7 @@ class ProfilePage extends Component {
 
 const mapStateToProps = ({ User }) => {
   return {
+    id: User.userData.id,
     profile: User.userData.profile,
     cars: User.userData.cars,
   };

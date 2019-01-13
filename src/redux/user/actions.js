@@ -125,6 +125,24 @@ export function resetChangePasswordData() {
   return dispatch => dispatch({ type: T.USER_CHANGE_PASSWORD_RESET });
 }
 
+export function updateData(userId) {
+  return async dispatch => {
+    try {
+      const { isSuccess, ...res } = await User.update(userId);
+      if (!isSuccess) {
+        return;
+      }
+      const { id, ...rest } = res;
+      await AsyncStorage.setItem('id', id.toString());
+      await AsyncStorage.setItem('userData', JSON.stringify(rest));
+      dispatch({ type: T.USER_UPDATE_SUCCESS, data: res });
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+    }
+  };
+}
+
 export function logoutFromAccount() {
   return dispatch => dispatch({ type: T.USER_LOGOUT });
 }
