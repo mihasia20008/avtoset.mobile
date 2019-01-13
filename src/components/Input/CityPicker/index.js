@@ -12,14 +12,10 @@ import { fetchCities, clearCitiesList } from '../../../redux/citypicker/actions'
 
 const styles = StyleSheet.create({
   container: {
-    zIndex: 1,
+    zIndex: 1000,
   },
   cityList: {
-    position: 'absolute',
-    top: '100%',
-    left: 0,
-    right: 0,
-    zIndex: 10,
+    zIndex: 1000,
     paddingTop: 5,
     paddingBottom: 5,
     paddingLeft: 10,
@@ -71,7 +67,7 @@ class InputCityPicker extends Component {
         needClearField: false,
       };
     }
-    if (propsDisplayed.search(stateDisplayed) !== -1) {
+    if (propsDisplayed.toLowerCase().search(stateDisplayed.toLowerCase()) !== -1) {
       return {
         displayed: propsDisplayed,
       };
@@ -199,24 +195,22 @@ class InputCityPicker extends Component {
           <Text style={globalStyles.labelText}>{label}</Text>
           {required ? <Text style={globalStyles.star}>*</Text> : null}
         </View>
-        <View>
-          <TextInput
-            style={globalStyles.input}
-            onFocus={this.handleFocus}
-            onChangeText={this.handleChangeText}
-            value={displayed}
-            editable={editable}
-            selectTextOnFocus={editable}
-            autoCorrect={false}
-          />
-          {this.renderCityList()}
-        </View>
+        <TextInput
+          style={globalStyles.input}
+          onFocus={this.handleFocus}
+          onChangeText={this.handleChangeText}
+          value={displayed}
+          editable={editable}
+          selectTextOnFocus={editable}
+          autoCorrect={false}
+        />
         {errorText ? (
           <View style={globalStyles.errorWrap}>
             <Text style={globalStyles.errorText}>{errorText}</Text>
           </View>
         ) : null}
         <ValidateIcon type={status} />
+        {this.renderCityList()}
       </View>
     );
   }

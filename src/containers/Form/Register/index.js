@@ -21,7 +21,7 @@ class RegisterForm extends Component {
   };
 
   state = {
-    phone: {
+    login: {
       type: 'phone-confirm',
       label: 'Номер телефона',
       value: '',
@@ -30,7 +30,7 @@ class RegisterForm extends Component {
       status: '',
       errorText: '',
     },
-    name: {
+    full_name: {
       type: 'name',
       label: 'Фамилия Имя Отчество',
       value: '',
@@ -66,7 +66,7 @@ class RegisterForm extends Component {
       status: '',
       errorText: '',
     },
-    birthday: {
+    personal_birthday: {
       type: 'date-picker',
       label: 'Дата рождения',
       value: '',
@@ -75,7 +75,7 @@ class RegisterForm extends Component {
       status: '',
       errorText: '',
     },
-    location_id: {
+    location: {
       type: 'city-picker',
       label: 'Город',
       displayed: '',
@@ -87,7 +87,7 @@ class RegisterForm extends Component {
       status: '',
       errorText: '',
     },
-    gender: {
+    personal_gender: {
       type: 'checkbox',
       label: 'Пол',
       value: '',
@@ -114,7 +114,7 @@ class RegisterForm extends Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    if (props.confirmPhoneStatus === 2 && state.phone.editable) {
+    if (props.confirmPhoneStatus === 2 && state.login.editable) {
       return Object.keys(state).reduce((acc, key) => {
         acc[key] = Object.assign({}, state[key], { editable: key !== 'phone' });
         return acc;
@@ -157,7 +157,7 @@ class RegisterForm extends Component {
         }));
         return;
       }
-      case key === 'phone': {
+      case key === 'login': {
         if (phoneConfirmStatus === 1) {
           const { onRepeatPhone } = this.props;
           onRepeatPhone({
@@ -208,9 +208,9 @@ class RegisterForm extends Component {
   };
 
   handleInputFocus = name => {
-    if (name === 'location_id') {
+    if (name === 'location') {
       this.setState(prevState => ({
-        location_id: Object.assign({}, prevState.location_id, {
+        location: Object.assign({}, prevState.location, {
           forceClose: false,
           focused: true,
         }),
@@ -221,10 +221,10 @@ class RegisterForm extends Component {
   };
 
   handleTouchOutsideCityPicker = () => {
-    const { focused } = this.state.location_id;
+    const { focused } = this.state.location;
     if (focused) {
       this.setState(prevState => ({
-        location_id: Object.assign({}, prevState.location_id, {
+        location: Object.assign({}, prevState.location, {
           forceClose: true,
           focused: false,
         }),
@@ -313,12 +313,12 @@ class RegisterForm extends Component {
         canSubmit = false;
         return;
       }
-      if (key === 'birthday') {
+      if (key === 'personal_birthday') {
         submitObject.user[key] = input.value.replace(/(\d{2}).(\d{2}).(\d{4})/, '$3-$2-$1');
         return;
       }
-      if (key === 'phone') {
-        submitObject.user.login = `7${input.value}`;
+      if (key === 'login') {
+        submitObject.user[key] = `7${input.value}`;
         return;
       }
       submitObject.user[key] = input.value;

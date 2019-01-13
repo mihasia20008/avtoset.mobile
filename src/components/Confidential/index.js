@@ -24,9 +24,11 @@ const styles = StyleSheet.create({
   },
   iconActive: {
     display: 'flex',
+    opacity: 1,
   },
   iconNotActive: {
     display: 'none',
+    opacity: 0,
   },
   content: {
     paddingLeft: 15,

@@ -20,10 +20,10 @@ class EditForm extends Component {
   };
 
   state = {
-    name: {
+    full_name: {
       type: 'name',
       label: 'Фамилия Имя Отчество',
-      value: this.props.profile.name.value,
+      value: this.props.profile.full_name.value,
       required: true,
       status: '',
       errorText: '',
@@ -36,10 +36,13 @@ class EditForm extends Component {
       status: '',
       errorText: '',
     },
-    birthday: {
+    personal_birthday: {
       type: 'date-picker',
       label: 'Дата рождения',
-      value: this.props.profile.birthday.value.replace(/(\d{4})-(\d{2})-(\d{2})/, '$3.$2.$1'),
+      value: this.props.profile.personal_birthday.value.replace(
+        /(\d{4})-(\d{2})-(\d{2})/,
+        '$3.$2.$1',
+      ),
       required: true,
       status: '',
       errorText: '',
@@ -55,10 +58,10 @@ class EditForm extends Component {
       status: '',
       errorText: '',
     },
-    gender: {
+    personal_gender: {
       type: 'checkbox',
       label: 'Пол',
-      value: this.props.profile.gender.value === 'Мужской' ? 'M' : 'F',
+      value: this.props.profile.personal_gender.value === 'Мужской' ? 'M' : 'F',
       values: [{ text: 'Мужской', value: 'M' }, { text: 'Женский', value: 'F' }],
       required: true,
       status: '',
@@ -135,7 +138,7 @@ class EditForm extends Component {
         canSubmit = false;
         return;
       }
-      if (key === 'birthday') {
+      if (key === 'personal_birthday') {
         submitObject.user[key] = input.value.replace(/(\d{2}).(\d{2}).(\d{4})/, '$3-$2-$1');
         return;
       }
