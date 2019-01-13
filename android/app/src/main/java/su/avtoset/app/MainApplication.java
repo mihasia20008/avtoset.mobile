@@ -3,6 +3,7 @@ package su.avtoset.app;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import iyegoroff.RNColorMatrixImageFilters.ColorMatrixImageFiltersPackage;
 import com.RNTextInputMask.RNTextInputMaskPackage;
 import com.horcrux.svg.SvgPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -26,6 +27,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ColorMatrixImageFiltersPackage(),
             new RNTextInputMaskPackage(),
             new SvgPackage(),
             new RNGestureHandlerPackage()

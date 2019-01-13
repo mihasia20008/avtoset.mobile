@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -48,6 +47,7 @@
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		F8D18DED730F4BB2BFF03564 /* PT_Sans-Web-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 536A6F4006D84F10BC75057B /* PT_Sans-Web-Regular.ttf */; };
+		66FA0D770A5843E28FC45C55 /* libRNColorMatrixImageFilters.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 39AA6900469042909438719D /* libRNColorMatrixImageFilters.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -422,6 +422,8 @@
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		CF2C9B5D215140DE82AC6F8A /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = "<group>"; };
 		DD930C92548E452A8E49CB08 /* PT_Sans-Web-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "PT_Sans-Web-Bold.ttf"; path = "../assets/fonts/PT_Sans-Web-Bold.ttf"; sourceTree = "<group>"; };
+		41B784005724445582624485 /* RNColorMatrixImageFilters.xcodeproj */ = {isa = PBXFileReference; name = "RNColorMatrixImageFilters.xcodeproj"; path = "../node_modules/react-native-color-matrix-image-filters/ios/RNColorMatrixImageFilters.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		39AA6900469042909438719D /* libRNColorMatrixImageFilters.a */ = {isa = PBXFileReference; name = "libRNColorMatrixImageFilters.a"; path = "libRNColorMatrixImageFilters.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -454,6 +456,7 @@
 				271E1D70443E4143B5A34B9A /* libRNGestureHandler.a in Frameworks */,
 				3EF75661110849EEB5ECD38F /* libRNSVG.a in Frameworks */,
 				5C9712E3D38F493284562344 /* libRNTextInputMask.a in Frameworks */,
+				66FA0D770A5843E28FC45C55 /* libRNColorMatrixImageFilters.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -701,6 +704,7 @@
 				383E2F916A414341867E7E51 /* RNGestureHandler.xcodeproj */,
 				9B82A9F809D7475BB8D34C64 /* RNSVG.xcodeproj */,
 				5CCFE577451A4FA4BEC1360A /* RNTextInputMask.xcodeproj */,
+				41B784005724445582624485 /* RNColorMatrixImageFilters.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1386,12 +1390,14 @@
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-text-input-mask/ios/RNTextInputMask/RNTextInputMask/**",
+					"$(SRCROOT)/../node_modules/react-native-color-matrix-image-filters/ios/**",
 				);
 				INFOPLIST_FILE = AvtosetMobileTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1417,12 +1423,14 @@
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-text-input-mask/ios/RNTextInputMask/RNTextInputMask/**",
+					"$(SRCROOT)/../node_modules/react-native-color-matrix-image-filters/ios/**",
 				);
 				INFOPLIST_FILE = AvtosetMobileTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1450,6 +1458,7 @@
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-text-input-mask/ios/RNTextInputMask/RNTextInputMask/**",
+					"$(SRCROOT)/../node_modules/react-native-color-matrix-image-filters/ios/**",
 				);
 				INFOPLIST_FILE = AvtosetMobile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1475,6 +1484,7 @@
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-text-input-mask/ios/RNTextInputMask/RNTextInputMask/**",
+					"$(SRCROOT)/../node_modules/react-native-color-matrix-image-filters/ios/**",
 				);
 				INFOPLIST_FILE = AvtosetMobile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1506,11 +1516,13 @@
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-text-input-mask/ios/RNTextInputMask/RNTextInputMask/**",
+					"$(SRCROOT)/../node_modules/react-native-color-matrix-image-filters/ios/**",
 				);
 				INFOPLIST_FILE = "AvtosetMobile-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1545,11 +1557,13 @@
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-text-input-mask/ios/RNTextInputMask/RNTextInputMask/**",
+					"$(SRCROOT)/../node_modules/react-native-color-matrix-image-filters/ios/**",
 				);
 				INFOPLIST_FILE = "AvtosetMobile-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1583,11 +1597,13 @@
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-text-input-mask/ios/RNTextInputMask/RNTextInputMask/**",
+					"$(SRCROOT)/../node_modules/react-native-color-matrix-image-filters/ios/**",
 				);
 				INFOPLIST_FILE = "AvtosetMobile-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1621,11 +1637,13 @@
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-text-input-mask/ios/RNTextInputMask/RNTextInputMask/**",
+					"$(SRCROOT)/../node_modules/react-native-color-matrix-image-filters/ios/**",
 				);
 				INFOPLIST_FILE = "AvtosetMobile-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",

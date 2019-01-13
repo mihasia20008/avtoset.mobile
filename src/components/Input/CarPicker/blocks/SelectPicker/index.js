@@ -1,11 +1,39 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Platform } from 'react-native';
+import { StyleSheet, View, Text, Platform } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 
 import ValidateIcon from '../../../../ValidateIcon';
 
 import globalStyles from '../../../styles';
+
+const styles = StyleSheet.create({
+  inputIOS: {
+    paddingTop: 8,
+    paddingBottom: 8,
+    paddingLeft: 13,
+    paddingRight: 13,
+    color: '#383838',
+    backgroundColor: '#f7f7f7',
+    borderWidth: 1,
+    borderColor: '#eaebec',
+    borderRadius: 2,
+    fontFamily: 'PT Sans',
+    fontSize: 16,
+  },
+  inputAndroid: {
+    paddingTop: 8,
+    paddingBottom: 8,
+    paddingLeft: 11,
+    paddingRight: 11,
+    height: 45,
+    color: '#383838',
+    backgroundColor: '#f7f7f7',
+    borderWidth: 1,
+    borderColor: '#eaebec',
+    borderRadius: 2,
+  },
+});
 
 class SelectPicker extends Component {
   static propTypes = {
@@ -109,8 +137,14 @@ class SelectPicker extends Component {
           disabled={!editable}
           items={values}
           style={{
-            inputIOS: globalStyles.input,
-            inputAndroid: globalStyles.input,
+            inputIOS: styles.inputIOS,
+            inputAndroid: styles.inputAndroid,
+            viewContainer: {
+              borderWidth: 1,
+              borderColor: '#eaebec',
+              borderRadius: 2,
+            },
+            underline: { borderTopWidth: 0 },
           }}
           value={value}
           hideIcon

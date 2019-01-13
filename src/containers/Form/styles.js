@@ -11,12 +11,12 @@ export default StyleSheet.create({
     fontFamily: 'PT Sans',
     fontSize: 14,
     color: '#b03535',
+    marginBottom: 30,
   },
   buttons: {
     flex: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 30,
   },
 });

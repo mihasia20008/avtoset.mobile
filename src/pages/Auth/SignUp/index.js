@@ -1,14 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  ScrollView,
-  StyleSheet,
-  View,
-  TouchableWithoutFeedback,
-  Keyboard,
-  KeyboardAvoidingView,
-} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import PageTitle from '../../../components/PageTitle';
 import SignBlock from '../../../components/SignBlock';
@@ -96,37 +90,28 @@ class SignUpPage extends Component {
     const message = navigation.getParam('message');
 
     return (
-      <KeyboardAvoidingView style={styles.container} behavior="padding">
-        <TouchableWithoutFeedback
-          style={styles.container}
-          onPress={Keyboard.dismiss}
-          accessible={false}
-          // eslint-disable-next-line prettier/prettier
-        >
-          <ScrollView
-            style={styles.content}
-            contentContainerStyle={{ flexGrow: 1 }}
-            keyboardDismissMode="on-drag"
-            keyboardShouldPersistTaps="handled"
-            // eslint-disable-next-line prettier/prettier
-          >
-            <PageTitle title="Авторизация" />
-            <SignBlock title="Я - участник клуба «Автосеть»">
-              <AuthForm
-                defaultPhone={phone}
-                infoMessage={message}
-                onSuccessSubmit={this.handleGoToApp}
-                onGoToRestorePassword={this.handleGoToRestorePassword}
-              />
-            </SignBlock>
-            <SignBlock title="Я - новый пользователь">
-              <View style={styles.registerContainer}>
-                <Button isEmpty text="Зарегистироваться" onPress={this.handleGoToRegister} />
-              </View>
-            </SignBlock>
-          </ScrollView>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+      <KeyboardAwareScrollView
+        style={styles.content}
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
+        // eslint-disable-next-line prettier/prettier
+      >
+        <PageTitle title="Авторизация" />
+        <SignBlock title="Я - участник клуба «Автосеть»">
+          <AuthForm
+            defaultPhone={phone}
+            infoMessage={message}
+            onSuccessSubmit={this.handleGoToApp}
+            onGoToRestorePassword={this.handleGoToRestorePassword}
+          />
+        </SignBlock>
+        <SignBlock title="Я - новый пользователь">
+          <View style={styles.registerContainer}>
+            <Button isEmpty text="Зарегистироваться" onPress={this.handleGoToRegister} />
+          </View>
+        </SignBlock>
+      </KeyboardAwareScrollView>
     );
   }
 }

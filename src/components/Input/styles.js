@@ -30,7 +30,7 @@ export default StyleSheet.create({
     borderColor: '#eaebec',
     borderRadius: 2,
     fontFamily: 'PT Sans',
-    fontSize: 18,
+    fontSize: 16,
   },
   errorWrap: {
     position: 'absolute',

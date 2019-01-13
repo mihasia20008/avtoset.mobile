@@ -14,7 +14,7 @@ class HomePage extends Component {
 
   static defaultProps = { uri: '' };
 
-  componentDidMount() {
+  render() {
     const { uri, navigation } = this.props;
     Linking.canOpenURL(uri).then(supported => {
       if (supported) {
@@ -28,9 +28,6 @@ class HomePage extends Component {
         alert(`Произошла ошибка при попытке открыть следующую страницу: ${uri}`);
       }
     });
-  }
-
-  render() {
     return null;
   }
 }

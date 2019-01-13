@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, View, Text, Image, TouchableOpacity, Dimensions } from 'react-native';
+import { Grayscale } from 'react-native-color-matrix-image-filters';
 
 import { dateFormatter } from '../../services/utilities';
 
@@ -33,6 +34,11 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '85%',
     height: '85%',
+  },
+  imageGrayscale: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   discountWrap: {
     position: 'absolute',
@@ -99,17 +105,37 @@ class CouponCard extends Component {
     }
   };
 
+  renderImage() {
+    const { image, isActive } = this.props;
+
+    if (isActive) {
+      return (
+        <Image
+          style={styles.image}
+          resizeMode="contain"
+          source={{ uri: `${SERVER.HOST}${image}` }}
+        />
+      );
+    }
+
+    return (
+      <Grayscale style={styles.image}>
+        <Image
+          style={styles.imageGrayscale}
+          resizeMode="contain"
+          source={{ uri: `${SERVER.HOST}${image}` }}
+        />
+      </Grayscale>
+    );
+  }
+
   render() {
-    const { name, image, dateFrom, dateTo, discount, isActive } = this.props;
+    const { name, dateFrom, dateTo, discount, isActive } = this.props;
 
     return (
       <TouchableOpacity style={styles.container} onPress={this.handleCouponClick}>
         <View style={styles.imageWrap}>
-          <Image
-            style={styles.image}
-            resizeMode="contain"
-            source={{ uri: `${SERVER.HOST}${image}` }}
-          />
+          {this.renderImage()}
           <View style={[styles.discountWrap, isActive ? '' : styles.disabledDiscountWrap]}>
             <Text style={styles.discountText} numberOfLines={1} ellipsizeMode="tail">
               {discount}

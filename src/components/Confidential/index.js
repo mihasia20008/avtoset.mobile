@@ -10,6 +10,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 5,
     paddingBottom: 5,
+    marginBottom: 30,
   },
   iconWrap: {
     width: 24,

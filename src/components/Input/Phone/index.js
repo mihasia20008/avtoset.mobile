@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Platform } from 'react-native';
 import TextInputMask from 'react-native-text-input-mask';
 
 import ValidateIcon from '../../ValidateIcon';
@@ -13,8 +13,8 @@ const styles = StyleSheet.create({
     top: 1,
     left: 1,
     zIndex: 3,
-    width: 39,
-    height: 39,
+    width: Platform.OS === 'android' ? 42 : 37,
+    height: Platform.OS === 'android' ? 42 : 37,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
   },
   input: {
-    paddingLeft: 42,
+    paddingLeft: Platform.OS === 'android' ? 45 : 39,
   },
 });
 

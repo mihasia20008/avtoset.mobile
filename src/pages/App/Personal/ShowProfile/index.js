@@ -25,6 +25,9 @@ const styles = StyleSheet.create({
   carList: {
     marginTop: 30,
   },
+  buttonBlock: {
+    marginTop: 30,
+  },
   buttonWithNoMargin: {
     marginTop: 0,
   },
@@ -111,10 +114,10 @@ class ProfilePage extends Component {
               value={profile[key].value}
             />
           ))}
-          <View style={[globalFormStyles.buttons, styles.buttonWithNoMargin]}>
+          <View style={globalFormStyles.buttons}>
             <Button text="Изменить личные данные" onPress={this.handleGoToEdit} />
           </View>
-          <View style={globalFormStyles.buttons}>
+          <View style={[globalFormStyles.buttons, styles.buttonBlock]}>
             <Button text="Изменить пароль" onPress={this.handleGoToChangePassword} />
           </View>
           {cars.map(car => (
@@ -133,7 +136,7 @@ class ProfilePage extends Component {
             style={[
               globalFormStyles.buttons,
               styles.lastButton,
-              cars.length ? styles.buttonWithNoMargin : '',
+              cars.length ? styles.buttonWithNoMargin : styles.buttonBlock,
             ]}
             // eslint-disable-next-line prettier/prettier
           >
