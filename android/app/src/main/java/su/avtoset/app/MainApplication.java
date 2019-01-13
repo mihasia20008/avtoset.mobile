@@ -1,4 +1,4 @@
-package com.avtosetmobile;
+package su.avtoset.app;
 
 import android.app.Application;
 

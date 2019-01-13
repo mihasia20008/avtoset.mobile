@@ -1,4 +1,4 @@
-package com.avtosetmobile;
+package su.avtoset.app;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
