@@ -285,11 +285,11 @@ class RegisterForm extends Component {
         submitObject[key] = input.value;
         return;
       }
-      if (key === 'confidential') {
+      if (key === 'confidential' && checkConfirm) {
         if (input.error) {
           canSubmit = false;
         }
-        if (checkConfirm && !input.checked) {
+        if (!input.checked) {
           canSubmit = false;
           this.setState({
             [`${key}`]: Object.assign({}, input, {
