@@ -4,19 +4,19 @@ import { APP_VERSION, SERVER } from '../../constants';
 
 export default async (id, userData) => {
   try {
-    const { data: response } = await axios({
+    const { status, data: response } = await axios({
       method: 'POST',
       url: `${SERVER.HOST}${SERVER.API_PATH}/user/${id}/change-password?version=${APP_VERSION}`,
       data: {
         data: userData,
       },
     });
-    if (typeof response === 'string') {
-      throw new Error(response);
+    if (status === 201) {
+      return {
+        isSuccess: true,
+      };
     }
-    return {
-      isSuccess: true,
-    };
+    throw new Error(response);
   } catch (err) {
     // TODO обработка ошибок сервера
     return {
