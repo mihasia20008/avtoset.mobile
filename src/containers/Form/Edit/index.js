@@ -143,7 +143,7 @@ class EditForm extends Component {
         return;
       }
       if (key === 'location') {
-        submitObject.user.location_id = input.value;
+        submitObject.user.location = input.value;
         return;
       }
       submitObject.user[key] = input.value;
