@@ -9,25 +9,32 @@ class HomePage extends Component {
     navigation: PropTypes.shape({
       navigate: PropTypes.func.isRequired,
       getParam: PropTypes.func.isRequired,
+      addListener: PropTypes.func.isRequired,
     }),
   };
 
   static defaultProps = { uri: '' };
 
-  render() {
+  willFocusSubscription = this.props.navigation.addListener('willFocus', async () => {
     const { uri, navigation } = this.props;
-    Linking.canOpenURL(uri).then(supported => {
-      if (supported) {
-        Linking.openURL(uri);
-        const backPath = navigation.getParam('backPath');
-        if (backPath) {
-          navigation.navigate(backPath);
-        }
-      } else {
-        // eslint-disable-next-line no-alert
-        alert(`Произошла ошибка при попытке открыть следующую страницу: ${uri}`);
-      }
-    });
+    const supported = await Linking.canOpenURL(uri);
+    if (supported) {
+      Linking.openURL(uri);
+    } else {
+      // eslint-disable-next-line no-alert
+      alert(`Произошла ошибка при попытке открыть следующую страницу: ${uri}`);
+    }
+    const backPath = navigation.getParam('backPath');
+    if (backPath) {
+      navigation.navigate(backPath);
+    }
+  });
+
+  componentWillUnmount() {
+    this.willFocusSubscription.remove();
+  }
+
+  render() {
     return null;
   }
 }
