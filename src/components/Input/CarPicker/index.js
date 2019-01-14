@@ -58,8 +58,10 @@ class InputCarPicker extends Component {
     if (updatedStep && updatedStep !== prevStep && updatedStep !== currentStep) {
       let needResultKey = true;
       updatedState.result = Object.keys(result).reduce((acc, item) => {
-        needResultKey = updatedStep === item.split('_')[0];
         if (needResultKey) {
+          if (updatedStep === item.split('_')[0]) {
+            needResultKey = false;
+          }
           return Object.assign(acc, {
             [`${item}`]: result[item],
           });
