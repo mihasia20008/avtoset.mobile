@@ -4,9 +4,9 @@ import Svg, { Path } from 'react-native-svg';
 
 const styles = StyleSheet.create({
   icon: {
-    width: 43,
+    width: 38,
     height: '75%',
-    maxHeight: 45,
+    maxHeight: 40,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
   icon: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 35,
+    width: 30,
     height: '75%',
   },
 });

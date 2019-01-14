@@ -7,7 +7,7 @@ import Item from './blocks/Item';
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: 60,
+    height: 50,
     backgroundColor: '#3275bd',
   },
 });
