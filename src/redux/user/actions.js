@@ -143,6 +143,26 @@ export function updateData(userId) {
   };
 }
 
+export function legacyUpdateData(userId) {
+  return async dispatch => {
+    try {
+      dispatch({ type: T.USER_LEGACY_UPDATE_FETCH });
+      const { isSuccess, ...res } = await User.legacyUpdate(userId);
+      if (!isSuccess) {
+        dispatch({ type: T.USER_LEGACY_UPDATE_ERROR });
+        return;
+      }
+      const { id, authToken, ...rest } = res;
+      await AsyncStorage.setItem('authToken', authToken);
+      await AsyncStorage.setItem('id', id.toString());
+      await AsyncStorage.setItem('userData', JSON.stringify(rest));
+      dispatch({ type: T.USER_LEGACY_UPDATE_SUCCESS, data: res });
+    } catch (err) {
+      dispatch({ type: T.USER_LEGACY_UPDATE_ERROR });
+    }
+  };
+}
+
 export function logoutFromAccount() {
   return dispatch => dispatch({ type: T.USER_LOGOUT });
 }

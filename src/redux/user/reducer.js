@@ -32,6 +32,10 @@ const initialState = {
     phone: '',
     message: '',
   },
+  legacy: {
+    isFetching: false,
+    status: '',
+  },
 };
 
 export default (state = initialState, action = {}) => {
@@ -154,6 +158,33 @@ export default (state = initialState, action = {}) => {
     case T.USER_LOGOUT: {
       return {
         ...initialState,
+      };
+    }
+    case T.USER_LEGACY_UPDATE_FETCH: {
+      return {
+        ...state,
+        legacy: Object.assign({}, state.legacy, {
+          isFetching: true,
+        }),
+      };
+    }
+    case T.USER_LEGACY_UPDATE_ERROR: {
+      return {
+        ...state,
+        legacy: Object.assign({}, state.legacy, {
+          isFetching: false,
+          status: 'error',
+        }),
+      };
+    }
+    case T.USER_LEGACY_UPDATE_SUCCESS: {
+      return {
+        ...state,
+        legacy: Object.assign({}, state.legacy, {
+          isFetching: false,
+          status: 'success',
+        }),
+        userData: Object.assign({}, state.userData, action.data),
       };
     }
     default: {

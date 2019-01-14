@@ -3,6 +3,7 @@ package su.avtoset.app;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.github.wumke.RNExitApp.RNExitAppPackage;
 import iyegoroff.RNColorMatrixImageFilters.ColorMatrixImageFiltersPackage;
 import com.RNTextInputMask.RNTextInputMaskPackage;
 import com.horcrux.svg.SvgPackage;
@@ -11,6 +12,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+import org.pgsqlite.SQLitePluginPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,10 +29,12 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNExitAppPackage(),
             new ColorMatrixImageFiltersPackage(),
             new RNTextInputMaskPackage(),
             new SvgPackage(),
-            new RNGestureHandlerPackage()
+            new RNGestureHandlerPackage(),
+            new SQLitePluginPackage()
       );
     }
 
