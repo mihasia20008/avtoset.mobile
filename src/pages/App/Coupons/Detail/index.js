@@ -69,12 +69,30 @@ const styles = StyleSheet.create({
 
 class CouponDetail extends Component {
   static propTypes = {
-    name: PropTypes.string.isRequired,
-    barcode: PropTypes.string.isRequired,
-    discount: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+    item: PropTypes.shape({
+      name: PropTypes.string,
+      barcode: PropTypes.string,
+      offer: PropTypes.string,
+      image_url: PropTypes.string,
+    }).isRequired,
+    navigation: PropTypes.shape({
+      navigate: PropTypes.func.isRequired,
+    }),
     dispatch: PropTypes.func.isRequired,
   };
+
+  state = {};
+
+  static getDerivedStateFromProps(props) {
+    if (props.id === -1) {
+      const { navigation } = props;
+      navigation.navigate('CouponsList', {
+        isBackFromDetail: true,
+      });
+    }
+    return {};
+  }
 
   componentWillUnmount() {
     const { dispatch } = this.props;
@@ -82,7 +100,7 @@ class CouponDetail extends Component {
   }
 
   render() {
-    const { name, barcode, discount, image } = this.props;
+    const { name, barcode, offer: discount, image_url: image } = this.props.item;
 
     return (
       <View style={styles.container}>
@@ -114,12 +132,9 @@ class CouponDetail extends Component {
 }
 
 const mapStateToProps = ({ Coupons }) => {
-  const item = Coupons.list[Coupons.active];
   return {
-    barcode: item.barcode,
-    discount: item.offer,
-    name: item.name,
-    image: item.image_url,
+    id: Coupons.active,
+    item: Coupons.list[Coupons.active] || {},
   };
 };
 

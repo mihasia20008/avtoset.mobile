@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, View, Image, TouchableOpacity, Linking } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 
 import { SERVER } from '../../services/constants';
 
@@ -30,12 +31,37 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  backAction: {
+    position: 'absolute',
+    top: '50%',
+    left: '85%',
+    zIndex: 3,
+    marginTop: -5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 30,
+    height: 30,
+    borderRadius: 50,
+    borderWidth: 1,
+    borderColor: '#3275bd',
+  },
+  backActionIcon: {
+    width: '50%',
+    height: '50%',
+  },
 });
 
 class Header extends Component {
   static propTypes = {
-    logoSrc: PropTypes.string,
-    link: PropTypes.string,
+    logoSrc: PropTypes.string.isRequired,
+    link: PropTypes.string.isRequired,
+    hasBackIcon: PropTypes.bool,
+    onBackPress: PropTypes.func,
+  };
+
+  static defaultProps = {
+    hasBackIcon: false,
+    onBackPress: () => {},
   };
 
   static getImage(logo) {
@@ -69,13 +95,29 @@ class Header extends Component {
   };
 
   render() {
-    const { logoSrc } = this.props;
+    const { logoSrc, hasBackIcon, onBackPress } = this.props;
 
     return (
       <View style={styles.header}>
         <TouchableOpacity style={styles.actionArea} onPress={this.handlePress}>
           {Header.getImage(logoSrc)}
         </TouchableOpacity>
+        {hasBackIcon ? (
+          <TouchableOpacity style={styles.backAction} onPress={onBackPress}>
+            <Svg
+              style={styles.backActionIcon}
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 64 64"
+              // eslint-disable-next-line prettier/prettier
+            >
+              <Path
+                fill="#3275bd"
+                // eslint-disable-next-line max-len
+                d="M28.9 31.8L0.6 60.1c-0.8 0.8-0.8 2.1 0 2.8 0.4 0.4 0.9 0.6 1.4 0.6 0.5 0 1-0.2 1.4-0.6l28.5-28.5 28.5 28.5c0.4 0.4 0.9 0.6 1.4 0.6 0.5 0 1-0.2 1.4-0.6 0.8-0.8 0.8-2.1 0-2.8L35.1 31.8 63.4 3.4c0.8-0.8 0.8-2.1 0-2.8 -0.8-0.8-2.1-0.8-2.8 0L32 29.2 3.4 0.6c-0.8-0.8-2.1-0.8-2.8 0 -0.8 0.8-0.8 2.1 0 2.8L28.9 31.8z"
+              />
+            </Svg>
+          </TouchableOpacity>
+        ) : null}
       </View>
     );
   }

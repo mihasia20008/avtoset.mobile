@@ -51,13 +51,17 @@ class CouponsList extends Component {
   };
 
   willFocusSubscription = this.props.navigation.addListener('willFocus', async () => {
+    const { navigation } = this.props;
+    const isBackFromDetail = navigation.getParam('isBackFromDetail');
+    if (isBackFromDetail) {
+      return;
+    }
     const hasNetwork = await checkNetwork();
     if (hasNetwork) {
       const { id, dispatch } = this.props;
       dispatch(fetchCouponsList(id));
       dispatch(updateData(id));
     } else {
-      const { navigation } = this.props;
       navigation.navigate('Offline', {
         backPath: 'Discount',
         retryPath: 'Coupons',
