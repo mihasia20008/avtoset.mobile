@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Platform, Keyboard } from 'react-native';
 
 import Item from './blocks/Item';
 
@@ -23,6 +23,25 @@ class Footer extends Component {
     }),
   };
 
+  state = { visibility: true };
+
+  componentDidMount() {
+    if (Platform.OS === 'android') {
+      this.keyboardEventListeners = [
+        Keyboard.addListener('keyboardDidShow', () => this.toggleBarVisibility(false)),
+        Keyboard.addListener('keyboardDidHide', () => this.toggleBarVisibility(true)),
+      ];
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.keyboardEventListeners) {
+      this.keyboardEventListeners.forEach(eventListener => eventListener.remove());
+    }
+  }
+
+  toggleBarVisibility = visibility => this.setState({ visibility });
+
   handlePress = key => {
     const { navigation } = this.props;
     const { index, routes } = navigation.state;
@@ -32,8 +51,13 @@ class Footer extends Component {
   };
 
   render() {
+    const { visibility } = this.state;
     const { navigation } = this.props;
     const { index, routes } = navigation.state;
+
+    if (!visibility) {
+      return null;
+    }
 
     return (
       <View style={styles.container}>
