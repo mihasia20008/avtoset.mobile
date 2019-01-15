@@ -8,7 +8,7 @@ import Button from '../../../components/Button';
 import Confidential from '../../../components/Confidential';
 
 import globalFormStyles from '../styles';
-import { registerUser } from '../../../redux/user/actions';
+import { registerUser, resetRegisterData } from '../../../redux/user/actions';
 
 class RegisterForm extends Component {
   static propTypes = {
@@ -124,17 +124,19 @@ class RegisterForm extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { isSign: nowSignStatus, onSuccessSign } = this.props;
+    const { isSign: nowSignStatus, onSuccessSign, dispatch } = this.props;
     const { isSign: prevSignStatus } = prevProps;
 
     if (nowSignStatus && !prevSignStatus) {
       onSuccessSign();
+      dispatch(resetRegisterData());
     }
   }
 
   handleGoToAuth = () => {
-    const { onGoToAuth } = this.props;
+    const { onGoToAuth, dispatch } = this.props;
     onGoToAuth();
+    dispatch(resetRegisterData());
   };
 
   handleInputBlur = (key, value, phoneConfirmStatus) => {

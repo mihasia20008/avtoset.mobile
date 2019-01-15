@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, View } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
+import { connect } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import PageTitle from '../../../components/PageTitle';
@@ -11,6 +12,7 @@ import Button from '../../../components/Button';
 import AuthForm from '../../../containers/Form/Auth';
 
 import { checkNetwork } from '../../../services/utilities';
+import { resetAuthData } from '../../../redux/user/actions';
 
 const styles = StyleSheet.create({
   container: {
@@ -43,7 +45,8 @@ class SignUpPage extends Component {
   };
 
   handleGoToRegister = async () => {
-    const { navigation } = this.props;
+    const { navigation, dispatch } = this.props;
+    dispatch(resetAuthData());
     const hasNetwork = await checkNetwork();
 
     if (hasNetwork) {
@@ -64,7 +67,8 @@ class SignUpPage extends Component {
   };
 
   handleGoToRestorePassword = async () => {
-    const { navigation } = this.props;
+    const { navigation, dispatch } = this.props;
+    dispatch(resetAuthData());
     const hasNetwork = await checkNetwork();
 
     if (hasNetwork) {
@@ -116,4 +120,4 @@ class SignUpPage extends Component {
   }
 }
 
-export default SignUpPage;
+export default connect()(SignUpPage);

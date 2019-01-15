@@ -23,6 +23,10 @@ export function authUser(authObject) {
   };
 }
 
+export function resetAuthData() {
+  return dispatch => dispatch({ type: T.USER_LOGIN_RESET });
+}
+
 export function registerUser(userData) {
   return async dispatch => {
     try {
@@ -41,6 +45,10 @@ export function registerUser(userData) {
       dispatch({ type: T.USER_REGISTER_ERROR, message: 'Ошибка в процессе авторизации' });
     }
   };
+}
+
+export function resetRegisterData() {
+  return dispatch => dispatch({ type: T.USER_REGISTER_RESET });
 }
 
 export function getDataFromAsyncStorage(userData) {

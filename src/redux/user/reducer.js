@@ -61,6 +61,13 @@ export default (state = initialState, action = {}) => {
         result: Object.assign({}, state.result, { isAuth: true }),
       };
     }
+    case T.USER_LOGIN_RESET: {
+      return {
+        ...state,
+        errors: Object.assign({}, state.errors, { auth: '' }),
+        result: Object.assign({}, state.result, { isAuth: false }),
+      };
+    }
     case T.USER_REGISTER_ERROR: {
       return {
         ...state,
@@ -74,6 +81,13 @@ export default (state = initialState, action = {}) => {
         isFetching: false,
         userData: Object.assign({}, state.userData, action.data),
         result: Object.assign({}, state.result, { isSign: true }),
+      };
+    }
+    case T.USER_REGISTER_RESET: {
+      return {
+        ...state,
+        errors: Object.assign({}, state.errors, { sign: '' }),
+        result: Object.assign({}, state.result, { isSign: false }),
       };
     }
     case T.USER_EDIT_ERROR: {

@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 
-import { authUser } from '../../../redux/user/actions';
+import { authUser, resetAuthData } from '../../../redux/user/actions';
 import { checkNetwork } from '../../../services/utilities';
 
 import globalFormStyles from '../styles';
@@ -51,11 +51,12 @@ class AuthForm extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { isAuth: nowAuthStatus, onSuccessSubmit } = this.props;
+    const { isAuth: nowAuthStatus, onSuccessSubmit, dispatch } = this.props;
     const { isAuth: prevAuthStatus } = prevProps;
 
     if (nowAuthStatus && !prevAuthStatus) {
       onSuccessSubmit();
+      dispatch(resetAuthData());
     }
   }
 
