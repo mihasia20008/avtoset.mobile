@@ -157,7 +157,7 @@ export function legacyUpdateData(userId) {
       dispatch({ type: T.USER_LEGACY_UPDATE_FETCH });
       const { isSuccess, ...res } = await User.legacyUpdate(userId);
       if (!isSuccess) {
-        dispatch({ type: T.USER_LEGACY_UPDATE_ERROR });
+        dispatch({ type: T.USER_LEGACY_UPDATE_ERROR, message: JSON.stringify(res) });
         return;
       }
       const { id, authToken, ...rest } = res;
@@ -166,7 +166,7 @@ export function legacyUpdateData(userId) {
       await AsyncStorage.setItem('userData', JSON.stringify(rest));
       dispatch({ type: T.USER_LEGACY_UPDATE_SUCCESS, data: res });
     } catch (err) {
-      dispatch({ type: T.USER_LEGACY_UPDATE_ERROR });
+      dispatch({ type: T.USER_LEGACY_UPDATE_ERROR, message: err.message });
     }
   };
 }

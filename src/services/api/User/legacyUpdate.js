@@ -29,8 +29,7 @@ export default async userId => {
     // TODO обработка ошибок сервера
     return {
       isSuccess: false,
-      needLog: true,
-      message: 'Ошибка выполнения процесса обновления данных о пользователя',
+      message: 'Ошибка выполнения процесса обновления данных о пользователе',
       forDevelopers: err.message,
     };
   }
