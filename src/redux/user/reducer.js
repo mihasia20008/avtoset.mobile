@@ -35,6 +35,7 @@ const initialState = {
   legacy: {
     isFetching: false,
     status: '',
+    message: '',
   },
 };
 
@@ -188,6 +189,7 @@ export default (state = initialState, action = {}) => {
         legacy: Object.assign({}, state.legacy, {
           isFetching: false,
           status: 'error',
+          message: action.message,
         }),
       };
     }

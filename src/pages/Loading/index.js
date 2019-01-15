@@ -8,7 +8,7 @@ import RNExitApp from 'react-native-exit-app';
 import Spinner from '../../components/Spinner';
 
 import { getDataFromAsyncStorage, legacyUpdateData } from '../../redux/user/actions';
-import { checkNetwork } from '../../services/utilities';
+import { checkNetwork, Logger } from '../../services/utilities';
 
 const styles = StyleSheet.create({
   container: {
@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
 
 class LoadingPage extends Component {
   static propTypes = {
+    id: PropTypes.number,
     legacyData: PropTypes.shape({
       isFetching: PropTypes.bool,
       status: PropTypes.string,
@@ -103,16 +104,31 @@ class LoadingPage extends Component {
   };
 
   static getDerivedStateFromProps(props) {
-    const { legacyData } = props;
-    // TODO логирование причины неудачной миграции со старой версии
+    const { legacyData, id } = props;
     if (!legacyData.isFetching && legacyData.status === 'success') {
       AsyncStorage.setItem('legacyUpdate', 'true');
+      Logger({
+        level: 'debug',
+        code: '#4001',
+        message: 'Успешный перенос авторизации пользователя из старой версии приложения',
+        data: { user_id: id },
+        trace: 'src/pages/Loading/index.js:109',
+        // eslint-disable-next-line no-console
+      }).catch(err => console.log(err));
       return {
         pathToGo: 'App',
       };
     }
     if (!legacyData.isFetching && legacyData.status === 'error') {
       AsyncStorage.setItem('legacyUpdate', 'false');
+      Logger({
+        level: 'debug',
+        code: '#4002',
+        message: 'Ошибка переноса авторизации на стороне сервера',
+        data: legacyData.message,
+        trace: 'src/pages/Loading/index.js:123',
+        // eslint-disable-next-line no-console
+      }).catch(err => console.log(err));
       return {
         pathToGo: 'Auth',
       };
@@ -168,9 +184,14 @@ class LoadingPage extends Component {
     if (!isSuccess) {
       await AsyncStorage.setItem('legacyUpdate', 'false');
       this.setState({ pathToGo: 'Auth' });
-      // eslint-disable-next-line no-console
-      console.log(rest);
-      // TODO логирование причины неудачной миграции со старой версии
+      Logger({
+        level: 'debug',
+        code: '#4003',
+        message: 'Ошибка переноса авторизации на стороне приложения',
+        data: rest,
+        trace: 'src/pages/Loading/index.js:186',
+        // eslint-disable-next-line no-console
+      }).catch(err => console.log(err));
       return;
     }
     const { dispatch } = this.props;
@@ -194,6 +215,7 @@ class LoadingPage extends Component {
 const mapStateToProps = ({ User }) => {
   return {
     legacyData: User.legacy,
+    id: User.userData.id,
   };
 };
 
