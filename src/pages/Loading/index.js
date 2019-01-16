@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, StyleSheet, Dimensions, AsyncStorage } from 'react-native';
 import { connect } from 'react-redux';
-import SQLite from 'react-native-sqlite-storage';
 import RNExitApp from 'react-native-exit-app';
 
 import Spinner from '../../components/Spinner';
 
 import { getDataFromAsyncStorage, legacyUpdateData } from '../../redux/user/actions';
 import { checkNetwork, Logger } from '../../services/utilities';
+import getInfoFromDb from './getInfoFromDb';
 
 const styles = StyleSheet.create({
   container: {
@@ -45,59 +45,6 @@ class LoadingPage extends Component {
       navigate: PropTypes.func.isRequired,
     }),
   };
-
-  static getInfoFromDb(callback) {
-    /* eslint-disable */
-    const db = SQLite.openDatabase(
-      'AvtosetDataBase',
-      '1.5.0',
-      'AvtosetDataBase',
-      1024 * 1024 * 4,
-      () => console.log('Database OPENED'),
-      err =>
-        callback({
-          isSuccess: false,
-          err,
-        }),
-    );
-    db.transaction(tx => {
-      tx.executeSql(
-        'CREATE TABLE IF NOT EXISTS CLIENTS (ID,USER,CAR)',
-        [],
-        (tx, result) => {},
-        (tx, result) =>
-          callback({
-            isSuccess: false,
-            err: result,
-          }),
-      );
-      tx.executeSql(
-        'SELECT * FROM CLIENTS',
-        [],
-        (tx, results) => {
-          const len = results.rows.length;
-          if (!len) {
-            callback({
-              isSuccess: false,
-              err: 'Нет данных об авторизации',
-            });
-            return;
-          }
-          callback({
-            isSuccess: true,
-            user: results.rows.item(0),
-          });
-        },
-        (tx, result) => {
-          callback({
-            isSuccess: false,
-            err: result,
-          });
-        },
-      );
-    });
-    /* eslint-enable */
-  }
 
   state = {
     pathToGo: '',
@@ -166,7 +113,7 @@ class LoadingPage extends Component {
       if (!statusLegacyUpdate) {
         const hasNetwork = await checkNetwork();
         if (hasNetwork) {
-          LoadingPage.getInfoFromDb(this.callbackGettingData);
+          getInfoFromDb(this.callbackGettingData);
           return;
         }
         // eslint-disable-next-line no-alert
@@ -214,6 +161,7 @@ class LoadingPage extends Component {
 
 const mapStateToProps = ({ User }) => {
   return {
+    id: User.userData.id,
     legacyData: User.legacy,
   };
 };

@@ -58,11 +58,6 @@ class OfflinePage extends Component {
     const { navigation } = this.props;
     const backPath = navigation.getParam('backPath');
     navigation.navigate(backPath);
-    // const resetAction = StackActions.reset({
-    //   index: 0,
-    //   actions: [NavigationActions.navigate({ routeName: backPath })],
-    // });
-    // navigation.dispatch(resetAction);
   };
 
   render() {
