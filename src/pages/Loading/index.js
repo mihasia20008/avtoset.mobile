@@ -215,7 +215,6 @@ class LoadingPage extends Component {
 const mapStateToProps = ({ User }) => {
   return {
     legacyData: User.legacy,
-    id: User.userData.id,
   };
 };
 
