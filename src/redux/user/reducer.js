@@ -168,6 +168,7 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         userData: Object.assign({}, state.userData, action.data),
+        result: Object.assign({}, state.result, { isAuth: true }),
       };
     }
     case T.USER_LOGOUT: {

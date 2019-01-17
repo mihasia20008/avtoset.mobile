@@ -32,12 +32,20 @@ const styles = StyleSheet.create({
 
 class SignUpPage extends Component {
   static propTypes = {
+    needUpdate: PropTypes.bool.isRequired,
     navigation: PropTypes.shape({
       getParam: PropTypes.func.isRequired,
       dispatch: PropTypes.func.isRequired,
       navigate: PropTypes.func.isRequired,
     }),
   };
+
+  componentDidUpdate(prevProps) {
+    if (!prevProps.needUpdate && this.props.needUpdate) {
+      const { navigation } = this.props;
+      navigation.navigate('ProposUpdate');
+    }
+  }
 
   handleGoToApp = () => {
     const { navigation } = this.props;
@@ -120,4 +128,10 @@ class SignUpPage extends Component {
   }
 }
 
-export default connect()(SignUpPage);
+const mapStateToProps = ({ CheckVersion }) => {
+  return {
+    needUpdate: CheckVersion.needUpdate,
+  };
+};
+
+export default connect(mapStateToProps)(SignUpPage);

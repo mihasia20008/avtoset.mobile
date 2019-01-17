@@ -49,8 +49,9 @@ class ProfilePage extends Component {
   };
 
   willFocusSubscription = this.props.navigation.addListener('willFocus', async () => {
+    const { needUpdate } = this.props;
     const hasNetwork = await checkNetwork();
-    if (hasNetwork) {
+    if (hasNetwork && !needUpdate) {
       const { id, dispatch } = this.props;
       dispatch(updateData(id));
     }
@@ -63,7 +64,12 @@ class ProfilePage extends Component {
   handleGoToEdit = async () => {
     const { navigation } = this.props;
     const hasNetwork = await checkNetwork();
+    const needUpdate = await AsyncStorage.getItem('needUpdate');
 
+    if (needUpdate === 'true') {
+      navigation.navigate('ProposUpdate');
+      return;
+    }
     if (hasNetwork) {
       const resetAction = StackActions.reset({
         index: 1,
@@ -84,7 +90,12 @@ class ProfilePage extends Component {
   handleGoToChangePassword = async () => {
     const { navigation } = this.props;
     const hasNetwork = await checkNetwork();
+    const needUpdate = await AsyncStorage.getItem('needUpdate');
 
+    if (needUpdate === 'true') {
+      navigation.navigate('ProposUpdate');
+      return;
+    }
     if (hasNetwork) {
       const resetAction = StackActions.reset({
         index: 1,
@@ -165,8 +176,9 @@ class ProfilePage extends Component {
   }
 }
 
-const mapStateToProps = ({ User }) => {
+const mapStateToProps = ({ User, CheckVersion }) => {
   return {
+    needUpdate: CheckVersion.needUpdate,
     id: User.userData.id,
     profile: User.userData.profile,
     cars: User.userData.cars,

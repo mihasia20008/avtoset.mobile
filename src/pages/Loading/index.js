@@ -7,6 +7,7 @@ import RNExitApp from 'react-native-exit-app';
 import Spinner from '../../components/Spinner';
 
 import { getDataFromAsyncStorage, legacyUpdateData } from '../../redux/user/actions';
+import { checkVersion } from '../../redux/checkversion/actions';
 import { checkNetwork, Logger } from '../../services/utilities';
 import getInfoFromDb from './getInfoFromDb';
 
@@ -37,6 +38,7 @@ const styles = StyleSheet.create({
 class LoadingPage extends Component {
   static propTypes = {
     id: PropTypes.number,
+    checkVersionFetch: PropTypes.bool,
     legacyData: PropTypes.shape({
       isFetching: PropTypes.bool,
       status: PropTypes.string,
@@ -47,11 +49,25 @@ class LoadingPage extends Component {
   };
 
   state = {
+    // eslint-disable-next-line react/no-unused-state
+    prevVersionFetch: this.props.checkVersionFetch,
     pathToGo: '',
   };
 
-  static getDerivedStateFromProps(props) {
-    const { legacyData, id } = props;
+  static getDerivedStateFromProps(props, state) {
+    const { legacyData, id, checkVersionFetch, needRedirectToUpdate } = props;
+    const { prevVersionFetch } = state;
+    if (!checkVersionFetch && prevVersionFetch !== checkVersionFetch) {
+      return {
+        pathToGo: needRedirectToUpdate ? 'ProposUpdate' : 'Auth',
+        prevVersionFetch: checkVersionFetch,
+      };
+    }
+    if (prevVersionFetch !== checkVersionFetch) {
+      return {
+        prevVersionFetch: checkVersionFetch,
+      };
+    }
     if (!legacyData.isFetching && legacyData.status === 'success') {
       AsyncStorage.setItem('legacyUpdate', 'true');
       Logger({
@@ -84,7 +100,7 @@ class LoadingPage extends Component {
   }
 
   componentDidMount() {
-    setTimeout(() => {
+    this.checkUserTimer = setTimeout(() => {
       this.handleLoadApp().catch(() => this.setState({ pathToGo: 'Auth' }));
     }, 1000);
   }
@@ -97,6 +113,10 @@ class LoadingPage extends Component {
     if (!prevPathToGo && nowPathToGo) {
       navigation.navigate(nowPathToGo);
     }
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.checkUserTimer);
   }
 
   handleLoadApp = async () => {
@@ -122,7 +142,15 @@ class LoadingPage extends Component {
         );
         setTimeout(() => RNExitApp.exitApp(), 2500);
       }
-      this.setState({ pathToGo: 'Auth' });
+      this.handleCheckAppVersion().catch(() => this.setState({ pathToGo: 'Auth' }));
+    }
+  };
+
+  handleCheckAppVersion = async () => {
+    const hasNetwork = await checkNetwork();
+    if (hasNetwork) {
+      const { dispatch } = this.props;
+      dispatch(checkVersion());
     }
   };
 
@@ -159,10 +187,12 @@ class LoadingPage extends Component {
   }
 }
 
-const mapStateToProps = ({ User }) => {
+const mapStateToProps = ({ User, CheckVersion }) => {
   return {
     id: User.userData.id,
     legacyData: User.legacy,
+    checkVersionFetch: CheckVersion.fetch,
+    needRedirectToUpdate: CheckVersion.needUpdate,
   };
 };
 

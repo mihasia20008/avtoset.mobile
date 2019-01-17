@@ -24,20 +24,30 @@ const styles = StyleSheet.create({
 
 class DiscountPage extends Component {
   static propTypes = {
+    needUpdate: PropTypes.bool,
     card: PropTypes.string.isRequired,
     phone: PropTypes.string,
     navigation: PropTypes.shape({
       addListener: PropTypes.func.isRequired,
+      navigate: PropTypes.func.isRequired,
     }),
   };
 
   willFocusSubscription = this.props.navigation.addListener('willFocus', async () => {
+    const { needUpdate } = this.props;
     const hasNetwork = await checkNetwork();
-    if (hasNetwork) {
+    if (hasNetwork && !needUpdate) {
       const { id, dispatch } = this.props;
       dispatch(updateData(id));
     }
   });
+
+  componentDidUpdate(prevProps) {
+    const { needUpdate, navigation } = this.props;
+    if (!prevProps.needUpdate && needUpdate) {
+      navigation.navigate('ProposUpdate');
+    }
+  }
 
   componentWillUnmount() {
     this.willFocusSubscription.remove();
@@ -60,8 +70,9 @@ class DiscountPage extends Component {
   }
 }
 
-const mapStateToProps = ({ User }) => {
+const mapStateToProps = ({ User, CheckVersion }) => {
   return {
+    needUpdate: CheckVersion.needUpdate,
     id: User.userData.id,
     card: User.userData.card,
     phone: User.userData.region.callCenterPhone,

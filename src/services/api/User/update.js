@@ -24,6 +24,13 @@ export default async userId => {
       ...rest,
     };
   } catch (err) {
+    if (err.response.status === 405) {
+      return {
+        isSuccess: false,
+        needRedirectToUpdate: true,
+        data: err.response.data.errors.version,
+      };
+    }
     // TODO обработка ошибок сервера
     return {
       isSuccess: false,

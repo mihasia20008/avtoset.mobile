@@ -33,6 +33,13 @@ export default async authData => {
         message: 'Неверная пара логин/пароль',
       };
     }
+    if (err.response.status === 405) {
+      return {
+        isSuccess: false,
+        needRedirectToUpdate: true,
+        data: err.response.data.errors.version,
+      };
+    }
     // TODO обработка ошибок сервера
     return {
       isSuccess: false,

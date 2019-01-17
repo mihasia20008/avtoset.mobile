@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, AsyncStorage } from 'react-native';
 import { connect } from 'react-redux';
 
 import PageTitle from '../../../../components/PageTitle';
@@ -57,16 +57,21 @@ class CouponsList extends Component {
       return;
     }
     const hasNetwork = await checkNetwork();
+    const needUpdate = await AsyncStorage.getItem('needUpdate');
+    if (needUpdate === 'true') {
+      navigation.navigate('ProposUpdate');
+      return;
+    }
     if (hasNetwork) {
       const { id, dispatch } = this.props;
       dispatch(fetchCouponsList(id));
       dispatch(updateData(id));
-    } else {
-      navigation.navigate('Offline', {
-        backPath: 'Discount',
-        retryPath: 'Coupons',
-      });
+      return;
     }
+    navigation.navigate('Offline', {
+      backPath: 'Discount',
+      retryPath: 'Coupons',
+    });
   });
 
   componentWillUnmount() {

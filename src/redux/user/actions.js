@@ -2,6 +2,7 @@ import { AsyncStorage } from 'react-native';
 import * as T from './actionTypes';
 
 import { User } from '../../services/api';
+import { redirectToUpdate, resetStatus } from '../checkversion/actions';
 
 export function authUser(authObject) {
   return async dispatch => {
@@ -9,6 +10,11 @@ export function authUser(authObject) {
       dispatch({ type: T.USER_ACTION_FETCH });
       const { isSuccess, ...res } = await User.login(authObject);
       if (!isSuccess) {
+        if (res.needRedirectToUpdate) {
+          dispatch(redirectToUpdate(res.data));
+          dispatch({ type: T.USER_LOGIN_ERROR, message: '' });
+          return;
+        }
         dispatch({ type: T.USER_LOGIN_ERROR, message: res.message });
         return;
       }
@@ -138,6 +144,11 @@ export function updateData(userId) {
     try {
       const { isSuccess, ...res } = await User.update(userId);
       if (!isSuccess) {
+        if (res.needRedirectToUpdate) {
+          dispatch(redirectToUpdate(res.data));
+          dispatch({ type: T.USER_LOGIN_ERROR, message: '' });
+          return;
+        }
         return;
       }
       const { id, ...rest } = res;
@@ -172,5 +183,8 @@ export function legacyUpdateData(userId) {
 }
 
 export function logoutFromAccount() {
-  return dispatch => dispatch({ type: T.USER_LOGOUT });
+  return dispatch => {
+    dispatch({ type: T.USER_LOGOUT });
+    dispatch(resetStatus());
+  };
 }

@@ -13,6 +13,10 @@ const styles = StyleSheet.create({
     borderColor: '#006ac5',
     borderRadius: 2,
   },
+  bigButton: {
+    paddingTop: 15,
+    paddingBottom: 15,
+  },
   emptyButton: {
     backgroundColor: 'transparent',
     borderColor: '#2975c0',
@@ -33,6 +37,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
   },
+  bigText: {
+    fontSize: 20,
+  },
   emptyText: {
     color: '#005fb1',
   },
@@ -45,6 +52,7 @@ class Button extends Component {
   static propTypes = {
     text: PropTypes.string.isRequired,
     onPress: PropTypes.func.isRequired,
+    big: PropTypes.bool,
     isEmpty: PropTypes.bool,
     isShadow: PropTypes.bool,
     disabled: PropTypes.bool,
@@ -58,12 +66,13 @@ class Button extends Component {
   };
 
   render() {
-    const { text, isEmpty, isShadow, disabled } = this.props;
+    const { text, big, isEmpty, isShadow, disabled } = this.props;
 
     return (
       <TouchableOpacity
         style={[
           styles.button,
+          big ? styles.bigButton : '',
           isEmpty ? styles.emptyButton : '',
           isShadow ? styles.shadowButton : '',
           disabled ? styles.disabledButton : '',
@@ -72,7 +81,12 @@ class Button extends Component {
         // eslint-disable-next-line prettier/prettier
       >
         <Text
-          style={[styles.text, isEmpty ? styles.emptyText : '', isShadow ? styles.shadowText : '']}
+          style={[
+            styles.text,
+            big ? styles.bigText : '',
+            isEmpty ? styles.emptyText : '',
+            isShadow ? styles.shadowText : '',
+          ]}
           // eslint-disable-next-line prettier/prettier
         >
           {text}
