@@ -39,6 +39,7 @@ class LoadingPage extends Component {
   static propTypes = {
     id: PropTypes.number,
     checkVersionFetch: PropTypes.bool,
+    needUpdate: PropTypes.bool,
     legacyData: PropTypes.shape({
       isFetching: PropTypes.bool,
       status: PropTypes.string,
@@ -51,16 +52,23 @@ class LoadingPage extends Component {
   state = {
     // eslint-disable-next-line react/no-unused-state
     prevVersionFetch: this.props.checkVersionFetch,
+    // eslint-disable-next-line react/no-unused-state
+    prevNeedUpdate: this.props.needUpdate,
     pathToGo: '',
   };
 
   static getDerivedStateFromProps(props, state) {
-    const { legacyData, id, checkVersionFetch, needRedirectToUpdate } = props;
-    const { prevVersionFetch } = state;
+    const { legacyData, id, checkVersionFetch, needUpdate } = props;
+    const { prevVersionFetch, prevNeedUpdate } = state;
     if (!checkVersionFetch && prevVersionFetch !== checkVersionFetch) {
+      if (!prevNeedUpdate && needUpdate) {
+        return {
+          pathToGo: 'ProposUpdate',
+          prevVersionFetch: checkVersionFetch,
+        };
+      }
       return {
-        pathToGo: needRedirectToUpdate ? 'ProposUpdate' : 'Auth',
-        prevVersionFetch: checkVersionFetch,
+        pathToGo: 'Auth',
       };
     }
     if (prevVersionFetch !== checkVersionFetch) {
@@ -68,14 +76,18 @@ class LoadingPage extends Component {
         prevVersionFetch: checkVersionFetch,
       };
     }
+    if (prevNeedUpdate !== needUpdate) {
+      return {
+        prevNeedUpdate: needUpdate,
+      };
+    }
     if (!legacyData.isFetching && legacyData.status === 'success') {
-      AsyncStorage.setItem('legacyUpdate', 'true');
       Logger({
         level: 'debug',
-        code: '#4001',
+        code: '#4004',
         message: 'Успешный перенос авторизации пользователя из старой версии приложения',
         data: { user_id: id },
-        trace: 'src/pages/Loading/index.js:109',
+        trace: 'src/pages/Loading/index.js:73',
         // eslint-disable-next-line no-console
       }).catch(err => console.log(err));
       return {
@@ -83,13 +95,12 @@ class LoadingPage extends Component {
       };
     }
     if (!legacyData.isFetching && legacyData.status === 'error') {
-      AsyncStorage.setItem('legacyUpdate', 'false');
       Logger({
         level: 'debug',
-        code: '#4002',
+        code: '#4005',
         message: 'Ошибка переноса авторизации на стороне сервера',
         data: legacyData.message,
-        trace: 'src/pages/Loading/index.js:123',
+        trace: 'src/pages/Loading/index.js:87',
         // eslint-disable-next-line no-console
       }).catch(err => console.log(err));
       return {
@@ -100,7 +111,7 @@ class LoadingPage extends Component {
   }
 
   componentDidMount() {
-    this.checkUserTimer = setTimeout(() => {
+    setTimeout(() => {
       this.handleLoadApp().catch(() => this.setState({ pathToGo: 'Auth' }));
     }, 1000);
   }
@@ -115,12 +126,9 @@ class LoadingPage extends Component {
     }
   }
 
-  componentWillUnmount() {
-    clearTimeout(this.checkUserTimer);
-  }
-
   handleLoadApp = async () => {
     const { dispatch } = this.props;
+    AsyncStorage.clear();
     const token = await AsyncStorage.getItem('authToken');
     if (token) {
       const id = await AsyncStorage.getItem('id');
@@ -129,8 +137,9 @@ class LoadingPage extends Component {
       dispatch(getDataFromAsyncStorage({ id: +id, authToken: token, ...userData }));
       this.setState({ pathToGo: 'App' });
     } else {
-      const statusLegacyUpdate = await AsyncStorage.getItem('legacyUpdate');
-      if (!statusLegacyUpdate) {
+      const isFirstRun = await AsyncStorage.getItem('wasRunning');
+      await AsyncStorage.setItem('wasRunning', 'true');
+      if (!isFirstRun) {
         const hasNetwork = await checkNetwork();
         if (hasNetwork) {
           getInfoFromDb(this.callbackGettingData);
@@ -151,14 +160,14 @@ class LoadingPage extends Component {
     if (hasNetwork) {
       const { dispatch } = this.props;
       dispatch(checkVersion());
+      return;
     }
+    this.setState({ pathToGo: 'Auth' });
   };
 
   callbackGettingData = async result => {
     const { isSuccess, ...rest } = result;
     if (!isSuccess) {
-      await AsyncStorage.setItem('legacyUpdate', 'false');
-      this.setState({ pathToGo: 'Auth' });
       Logger({
         level: 'debug',
         code: '#4003',
@@ -167,6 +176,7 @@ class LoadingPage extends Component {
         trace: 'src/pages/Loading/index.js:186',
         // eslint-disable-next-line no-console
       }).catch(err => console.log(err));
+      this.setState({ pathToGo: 'Hello' });
       return;
     }
     const { dispatch } = this.props;
@@ -192,7 +202,7 @@ const mapStateToProps = ({ User, CheckVersion }) => {
     id: User.userData.id,
     legacyData: User.legacy,
     checkVersionFetch: CheckVersion.fetch,
-    needRedirectToUpdate: CheckVersion.needUpdate,
+    needUpdate: CheckVersion.needUpdate,
   };
 };
 

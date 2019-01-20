@@ -3,7 +3,6 @@ package su.avtoset.app;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import eu.sigrlami.rnsimdata.RNSimDataReactPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.github.wumke.RNExitApp.RNExitAppPackage;
 import iyegoroff.RNColorMatrixImageFilters.ColorMatrixImageFiltersPackage;
@@ -31,7 +30,6 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNSimDataReactPackage(),
             new RNDeviceInfo(),
             new RNExitAppPackage(),
             new ColorMatrixImageFiltersPackage(),

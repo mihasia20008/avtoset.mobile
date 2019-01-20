@@ -12,10 +12,10 @@ export default callback => {
     (tx, result) => {
       Logger({
         level: 'debug',
-        code: '#4004',
+        code: '#4001',
         message: 'Успешное создание базы данных',
         data: result,
-        trace: 'src/pages/Loading/index.js:57',
+        trace: 'src/pages/Loading/getInfoFromDb.js:13',
         // eslint-disable-next-line no-console
       }).catch(err => console.log(err));
     },
@@ -25,55 +25,21 @@ export default callback => {
         err,
       }),
   );
-  // tx.executeSql(
-  //   'SELECT * FROM CLIENTS ',
-  //   [],
-  //   (tx, results) => {
-  //     const len = results.rows.length;
-  //     if (!len) {
-  //       callback({
-  //         isSuccess: false,
-  //         err: 'Нет данных об авторизации',
-  //       });
-  //       return;
-  //     }
-  //     callback({
-  //       isSuccess: true,
-  //       user: results.rows.item(0),
-  //     });
-  //   },
-  //   (tx, result) => {
-  //     callback({
-  //       isSuccess: false,
-  //       err: result,
-  //     });
-  //   },
-  // );
   db.transaction(tx => {
-    tx.executeSql(
-      'CREATE TABLE IF NOT EXISTS CLIENTS (ID,USER,CAR) ',
-      [],
-      (tx, result) => {
-        Logger({
-          level: 'debug',
-          code: '#4005',
-          message: 'Успешное создание таблицы Clients',
-          data: result,
-          trace: 'src/pages/Loading/index.js:77',
-          // eslint-disable-next-line no-console
-        }).catch(err => console.log(err));
-      },
-      (tx, result) =>
-        callback({
-          isSuccess: false,
-          err: result,
-        }),
-    );
     tx.executeSql(
       'SELECT * FROM CLIENTS ',
       [],
       (tx, results) => {
+        console.log(results);
         const len = results.rows.length;
+        Logger({
+          level: 'debug',
+          code: '#4002',
+          message: 'Запрос на получение списка пользователей',
+          data: results,
+          trace: 'src/pages/Loading/getInfoFromDb.js:35',
+          // eslint-disable-next-line no-console
+        }).catch(err => console.log(err));
         if (!len) {
           callback({
             isSuccess: false,

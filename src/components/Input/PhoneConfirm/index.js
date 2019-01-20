@@ -19,6 +19,7 @@ class InputPhoneConfirm extends Component {
   static propTypes = {
     name: PropTypes.string,
     label: PropTypes.string,
+    value: PropTypes.string,
     status: PropTypes.string,
     errorText: PropTypes.string,
     required: PropTypes.bool,
@@ -73,6 +74,25 @@ class InputPhoneConfirm extends Component {
       };
     }
     return {};
+  }
+
+  componentDidMount() {
+    const { name, value: propsValue, onEvent } = this.props;
+    const { value } = this.state;
+
+    if (propsValue && !value) {
+      onEvent(name, {
+        status: 'success',
+        errorText: '',
+      });
+      this.setState(
+        {
+          value: propsValue,
+          canSendCode: true,
+        },
+        this.handleSendConfirmCode,
+      );
+    }
   }
 
   componentDidUpdate(prevProps) {

@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-import { SERVER } from '../constants';
+import { SERVER, APP_VERSION } from '../constants';
 
 export default async logParams => {
   try {
     const { data: response } = await axios({
       method: 'POST',
-      url: `${SERVER.HOST}${SERVER.API_PATH}/logs/`,
+      url: `${SERVER.HOST}${SERVER.API_PATH}/logs?version=${APP_VERSION}`,
       data: {
         data: logParams,
       },

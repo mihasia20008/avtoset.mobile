@@ -115,10 +115,10 @@ class ProfilePage extends Component {
 
   handleLogoutPress = async () => {
     const { navigation, dispatch } = this.props;
-    const legacyUpdateStatus = await AsyncStorage.getItem('legacyUpdate');
+    const wasRunning = await AsyncStorage.getItem('wasRunning');
     await AsyncStorage.clear();
-    if (legacyUpdateStatus) {
-      await AsyncStorage.setItem('legacyUpdate', legacyUpdateStatus);
+    if (wasRunning) {
+      await AsyncStorage.setItem('wasRunning', wasRunning);
     }
     dispatch(logoutFromAccount());
     navigation.navigate('Auth');

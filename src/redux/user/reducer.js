@@ -189,7 +189,7 @@ export default (state = initialState, action = {}) => {
         ...state,
         legacy: Object.assign({}, state.legacy, {
           isFetching: false,
-          status: 'error',
+          status: action.status,
           message: action.message,
         }),
       };

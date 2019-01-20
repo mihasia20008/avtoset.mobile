@@ -101,7 +101,7 @@ android {
         applicationId "su.avtoset.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode 2008
         versionName "2.0.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -147,8 +147,7 @@ android {
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services-gcm:+'
-    compile project(':react-native-sim-data')
+    compile 'com.google.android.gms:play-services-gcm:16.0.0'
     compile project(':react-native-device-info')
     compile project(':react-native-exit-app')
     compile project(':react-native-color-matrix-image-filters')

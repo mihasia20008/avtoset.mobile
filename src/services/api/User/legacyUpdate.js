@@ -26,6 +26,18 @@ export default async userId => {
       ...rest,
     };
   } catch (err) {
+    if (err.response.status === 404) {
+      return {
+        isSuccess: false,
+        status: 'signin',
+      };
+    }
+    if (err.response.status === 401) {
+      return {
+        isSuccess: false,
+        status: 'signup',
+      };
+    }
     // TODO обработка ошибок сервера
     return {
       isSuccess: false,

@@ -16,6 +16,7 @@ class InputPassword extends Component {
     required: PropTypes.bool.isRequired,
     editable: PropTypes.bool,
     returnTypingValue: PropTypes.bool,
+    minPasswordLength: PropTypes.number,
     onEvent: PropTypes.func.isRequired,
     onFocus: PropTypes.func,
   };
@@ -23,17 +24,18 @@ class InputPassword extends Component {
   static defaultProps = {
     editable: true,
     returnTypingValue: true,
+    minPasswordLength: 6,
     onFocus: () => {},
   };
 
-  static validateValue(value, required) {
+  static validateValue(value, required, minPasswordLength) {
     if (!value && required) {
       return {
         status: 'error',
         errorText: 'Поле обязательно для заполнения!',
       };
     }
-    if (value.length < 6) {
+    if (value.length < minPasswordLength) {
       return {
         status: 'error',
         errorText: 'Пароль слишком короткий!',
@@ -55,12 +57,12 @@ class InputPassword extends Component {
   };
 
   handleChangeText = value => {
-    const { name, status, returnTypingValue, required, onEvent } = this.props;
+    const { name, status, returnTypingValue, minPasswordLength, required, onEvent } = this.props;
 
     this.setState({ value });
 
     if (returnTypingValue) {
-      const validate = InputPassword.validateValue(value, required);
+      const validate = InputPassword.validateValue(value, required, minPasswordLength);
       if (validate.status === 'success') {
         onEvent(name, {
           ...validate,
@@ -87,9 +89,9 @@ class InputPassword extends Component {
 
   handleInputBlur = () => {
     const { value } = this.state;
-    const { name, required, onEvent } = this.props;
+    const { name, minPasswordLength, required, onEvent } = this.props;
 
-    const validate = InputPassword.validateValue(value, required);
+    const validate = InputPassword.validateValue(value, required, minPasswordLength);
 
     if (validate.status !== 'success') {
       onEvent(name, {

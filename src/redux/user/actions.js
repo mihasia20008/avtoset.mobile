@@ -168,7 +168,15 @@ export function legacyUpdateData(userId) {
       dispatch({ type: T.USER_LEGACY_UPDATE_FETCH });
       const { isSuccess, ...res } = await User.legacyUpdate(userId);
       if (!isSuccess) {
-        dispatch({ type: T.USER_LEGACY_UPDATE_ERROR, message: JSON.stringify(res) });
+        if (typeof res.status !== 'undefined') {
+          dispatch({ type: T.USER_LEGACY_UPDATE_ERROR, status: res.status });
+          return;
+        }
+        dispatch({
+          type: T.USER_LEGACY_UPDATE_ERROR,
+          status: 'error',
+          message: JSON.stringify(res),
+        });
         return;
       }
       const { id, authToken, ...rest } = res;

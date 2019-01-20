@@ -46,6 +46,10 @@ class SignInPage extends Component {
   };
 
   render() {
+    const { navigation } = this.props;
+    const phone = navigation.getParam('phone');
+    const message = navigation.getParam('message');
+
     return (
       <KeyboardAwareScrollView
         style={styles.content}
@@ -57,6 +61,8 @@ class SignInPage extends Component {
         <PageTitle title="Регистрация" />
         <SignBlock>
           <RegisterForm
+            defaultPhone={phone}
+            infoMessage={message}
             onRepeatPhone={this.handleRepeatPhone}
             onGoToAuth={this.handleBackPress}
             onSuccessSign={this.handleGoToApp}

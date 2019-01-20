@@ -13,6 +13,8 @@ import { registerUser, resetRegisterData } from '../../../redux/user/actions';
 class RegisterForm extends Component {
   static propTypes = {
     isSign: PropTypes.bool.isRequired,
+    defaultPhone: PropTypes.string,
+    infoMessage: PropTypes.string,
     errorText: PropTypes.string.isRequired,
     onSuccessSign: PropTypes.func.isRequired,
     onRepeatPhone: PropTypes.func.isRequired,
@@ -24,7 +26,7 @@ class RegisterForm extends Component {
     login: {
       type: 'phone-confirm',
       label: 'Номер телефона',
-      value: '',
+      value: this.props.defaultPhone || '',
       required: true,
       editable: true,
       status: '',
@@ -340,10 +342,11 @@ class RegisterForm extends Component {
 
   render() {
     const { checked } = this.state.confidential;
-    const { errorText } = this.props;
+    const { errorText, infoMessage } = this.props;
 
     return (
       <View onStartShouldSetResponder={this.handleTouchOutsideCityPicker}>
+        {infoMessage ? <Text style={globalFormStyles.infoMessage}>{infoMessage}</Text> : null}
         {Object.keys(this.state).map(key => {
           if (key === 'confidential') {
             return (
