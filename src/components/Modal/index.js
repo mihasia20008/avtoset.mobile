@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import Svg from 'react-native-svg';
 import Path from 'react-native-svg/elements/Path';
 
@@ -20,10 +20,9 @@ const styles = StyleSheet.create({
     padding: 30,
   },
   content: {
-    paddingTop: 30,
-    paddingBottom: 30,
-    paddingLeft: 15,
-    paddingRight: 15,
+    flex: 1,
+    paddingTop: 20,
+    paddingBottom: 20,
     borderRadius: 2,
     backgroundColor: '#fff',
     shadowColor: '#000',
@@ -34,6 +33,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  scroll: {
+    paddingLeft: 15,
+    paddingRight: 15,
   },
   titleWrap: {
     marginBottom: 15,
@@ -99,14 +102,16 @@ class Modal extends Component {
       <View style={styles.container}>
         <View style={styles.wrap}>
           <View style={styles.content}>
-            <View style={styles.titleWrap}>
-              <Text style={styles.title}>{title}</Text>
-            </View>
-            {paragraphs.map((paragraph, index) => (
-              <View key={paragraph} style={index !== paragraphsLength ? styles.textWrap : ''}>
-                <Text style={styles.text}>{paragraph}</Text>
+            <ScrollView style={styles.scroll} contentContainerStyle={{ flexGrow: 1 }}>
+              <View style={styles.titleWrap}>
+                <Text style={styles.title}>{title}</Text>
               </View>
-            ))}
+              {paragraphs.map((paragraph, index) => (
+                <View key={paragraph} style={index !== paragraphsLength ? styles.textWrap : ''}>
+                  <Text style={styles.text}>{paragraph}</Text>
+                </View>
+              ))}
+            </ScrollView>
             <TouchableOpacity style={styles.closeAction} onPress={onClose}>
               <Svg
                 style={styles.closeActionIcon}
