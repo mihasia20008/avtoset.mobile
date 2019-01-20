@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, View, Platform, Keyboard } from 'react-native';
+import { StyleSheet, View, Platform, Keyboard, Linking } from 'react-native';
+import { connect } from 'react-redux';
 
 import Item from './blocks/Item';
 
@@ -14,6 +15,7 @@ const styles = StyleSheet.create({
 
 class Footer extends Component {
   static propTypes = {
+    uri: PropTypes.string,
     navigation: PropTypes.shape({
       state: PropTypes.shape({
         index: PropTypes.number,
@@ -42,9 +44,20 @@ class Footer extends Component {
 
   toggleBarVisibility = visibility => this.setState({ visibility });
 
-  handlePress = key => {
+  handlePress = async key => {
     const { navigation } = this.props;
     const { index, routes } = navigation.state;
+    if (key === 'Home') {
+      const { uri } = this.props;
+      const supported = await Linking.canOpenURL(uri);
+      if (supported) {
+        Linking.openURL(uri);
+      } else {
+        // eslint-disable-next-line no-alert
+        alert(`Произошла ошибка при попытке открыть следующую страницу: ${uri}`);
+      }
+      return;
+    }
     navigation.navigate(key, {
       backPath: routes[index].key,
     });
@@ -74,4 +87,10 @@ class Footer extends Component {
   }
 }
 
-export default Footer;
+const mapStateToProps = ({ User }) => {
+  return {
+    uri: User.userData.region.domain,
+  };
+};
+
+export default connect(mapStateToProps)(Footer);
