@@ -55,11 +55,13 @@ class LoadingPage extends Component {
     // eslint-disable-next-line react/no-unused-state
     prevNeedUpdate: this.props.needUpdate,
     pathToGo: '',
+    // eslint-disable-next-line react/no-unused-state
+    tempPath: '',
   };
 
   static getDerivedStateFromProps(props, state) {
     const { legacyData, id, checkVersionFetch, needUpdate } = props;
-    const { prevVersionFetch, prevNeedUpdate } = state;
+    const { prevVersionFetch, prevNeedUpdate, tempPath } = state;
     if (!checkVersionFetch && prevVersionFetch !== checkVersionFetch) {
       if (!prevNeedUpdate && needUpdate) {
         return {
@@ -68,7 +70,7 @@ class LoadingPage extends Component {
         };
       }
       return {
-        pathToGo: 'Auth',
+        pathToGo: tempPath,
       };
     }
     if (prevVersionFetch !== checkVersionFetch) {
@@ -128,14 +130,13 @@ class LoadingPage extends Component {
 
   handleLoadApp = async () => {
     const { dispatch } = this.props;
-    AsyncStorage.clear();
     const token = await AsyncStorage.getItem('authToken');
     if (token) {
       const id = await AsyncStorage.getItem('id');
       const jsonData = await AsyncStorage.getItem('userData');
       const userData = await JSON.parse(jsonData);
       dispatch(getDataFromAsyncStorage({ id: +id, authToken: token, ...userData }));
-      this.setState({ pathToGo: 'App' });
+      this.handleCheckAppVersion('App').catch(() => this.setState({ pathToGo: 'Auth' }));
     } else {
       const isFirstRun = await AsyncStorage.getItem('wasRunning');
       await AsyncStorage.setItem('wasRunning', 'true');
@@ -151,18 +152,20 @@ class LoadingPage extends Component {
         );
         setTimeout(() => RNExitApp.exitApp(), 2500);
       }
-      this.handleCheckAppVersion().catch(() => this.setState({ pathToGo: 'Auth' }));
+      this.handleCheckAppVersion('Auth').catch(() => this.setState({ pathToGo: 'Auth' }));
     }
   };
 
-  handleCheckAppVersion = async () => {
+  handleCheckAppVersion = async path => {
     const hasNetwork = await checkNetwork();
     if (hasNetwork) {
       const { dispatch } = this.props;
+      // eslint-disable-next-line react/no-unused-state
+      this.setState({ tempPath: path });
       dispatch(checkVersion());
       return;
     }
-    this.setState({ pathToGo: 'Auth' });
+    this.setState({ pathToGo: path });
   };
 
   callbackGettingData = async result => {

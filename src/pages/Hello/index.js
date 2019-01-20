@@ -147,8 +147,10 @@ class HelloPage extends Component {
 
   handleCheckNumber = value => {
     this.setState({ step: 2, value });
-    const { dispatch } = this.props;
-    dispatch(legacyUpdateData(`7${value}`));
+    setTimeout(() => {
+      const { dispatch } = this.props;
+      dispatch(legacyUpdateData(`7${value}`));
+    }, 1000);
   };
 
   renderStep = () => {
