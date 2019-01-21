@@ -2,6 +2,7 @@ import * as T from './actionTypes';
 
 const initialState = {
   isFetching: false,
+  needLogout: false,
   userData: {
     authToken: '',
     card: '',
@@ -171,7 +172,13 @@ export default (state = initialState, action = {}) => {
         result: Object.assign({}, state.result, { isAuth: true }),
       };
     }
-    case T.USER_LOGOUT: {
+    case T.USER_LOGOUT_START: {
+      return {
+        ...state,
+        needLogout: true,
+      };
+    }
+    case T.USER_LOGOUT_END: {
       return {
         ...initialState,
       };

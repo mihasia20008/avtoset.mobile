@@ -144,6 +144,10 @@ export function updateData(userId) {
     try {
       const { isSuccess, ...res } = await User.update(userId);
       if (!isSuccess) {
+        if (res.needLogout) {
+          dispatch({ type: T.USER_LOGOUT_START });
+          return;
+        }
         if (res.needRedirectToUpdate) {
           dispatch(redirectToUpdate(res.data));
           dispatch({ type: T.USER_LOGIN_ERROR, message: '' });
@@ -192,7 +196,7 @@ export function legacyUpdateData(userId) {
 
 export function logoutFromAccount() {
   return dispatch => {
-    dispatch({ type: T.USER_LOGOUT });
+    dispatch({ type: T.USER_LOGOUT_END });
     dispatch(resetStatus());
   };
 }

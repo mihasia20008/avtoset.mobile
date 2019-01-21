@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 
 import Item from './blocks/Item';
 
+import { logoutFromAccount } from '../../redux/user/actions';
+
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
@@ -16,6 +18,7 @@ const styles = StyleSheet.create({
 class Footer extends Component {
   static propTypes = {
     uri: PropTypes.string,
+    needLogout: PropTypes.bool,
     navigation: PropTypes.shape({
       state: PropTypes.shape({
         index: PropTypes.number,
@@ -23,6 +26,7 @@ class Footer extends Component {
       }),
       navigate: PropTypes.func,
     }),
+    dispatch: PropTypes.func.isRequired,
   };
 
   state = { visibility: true };
@@ -33,6 +37,16 @@ class Footer extends Component {
         Keyboard.addListener('keyboardDidShow', () => this.toggleBarVisibility(false)),
         Keyboard.addListener('keyboardDidHide', () => this.toggleBarVisibility(true)),
       ];
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { needLogout: nowNeedLogoutStatus, navigation, dispatch } = this.props;
+    const { needLogout: prevNeedLogoutStatus } = prevProps;
+
+    if (!prevNeedLogoutStatus && nowNeedLogoutStatus) {
+      dispatch(logoutFromAccount());
+      navigation.navigate('Auth');
     }
   }
 
@@ -90,6 +104,7 @@ class Footer extends Component {
 const mapStateToProps = ({ User }) => {
   return {
     uri: User.userData.region.domain,
+    needLogout: User.needLogout,
   };
 };
 

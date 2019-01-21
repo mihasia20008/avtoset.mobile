@@ -24,6 +24,12 @@ export default async userId => {
       ...rest,
     };
   } catch (err) {
+    if (err.response.status === 404) {
+      return {
+        isSuccess: false,
+        needLogout: true,
+      };
+    }
     if (err.response.status === 405) {
       return {
         isSuccess: false,

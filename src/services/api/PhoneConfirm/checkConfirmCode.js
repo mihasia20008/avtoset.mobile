@@ -18,7 +18,6 @@ export default async (phone, code) => {
       status: 'confirm',
     };
   } catch (err) {
-    // TODO обработка ошибок сервера
     if (err.response.status === 400) {
       return {
         isSuccess: false,
@@ -36,7 +35,7 @@ export default async (phone, code) => {
     return {
       isSuccess: false,
       needLog: true,
-      message: 'Ошибка отправки кода проверки номера телефона',
+      message: 'Ошибка подтверждения номера телефона',
       forDevelopers: err.message,
     };
   }

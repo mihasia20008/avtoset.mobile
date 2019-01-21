@@ -17,11 +17,10 @@ export default async phone => {
       isSuccess: response.data.result === 'success',
     };
   } catch (err) {
-    // TODO обработка ошибок сервера
     return {
       isSuccess: false,
       needLog: true,
-      message: 'Ошибка отправки кода проверки номера телефона',
+      message: 'Ошибка отправки кода подтверждения номера телефона',
       forDevelopers: err.message,
     };
   }
