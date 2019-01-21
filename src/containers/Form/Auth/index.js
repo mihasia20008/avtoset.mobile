@@ -36,7 +36,6 @@ class AuthForm extends Component {
       label: 'Пароль',
       value: '',
       required: true,
-      minPasswordLength: 4,
       status: '',
       errorText: '',
     },

@@ -24,7 +24,7 @@ class InputPassword extends Component {
   static defaultProps = {
     editable: true,
     returnTypingValue: true,
-    minPasswordLength: 6,
+    minPasswordLength: 4,
     onFocus: () => {},
   };
 
