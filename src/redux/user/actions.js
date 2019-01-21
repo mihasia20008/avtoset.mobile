@@ -1,14 +1,14 @@
 import { AsyncStorage } from 'react-native';
 import * as T from './actionTypes';
 
-import { User } from '../../services/api';
+import { User, Auth } from '../../services/api';
 import { redirectToUpdate, resetStatus } from '../checkversion/actions';
 
 export function authUser(authObject) {
   return async dispatch => {
     try {
       dispatch({ type: T.USER_ACTION_FETCH });
-      const { isSuccess, ...res } = await User.login(authObject);
+      const { isSuccess, ...res } = await Auth.login(authObject);
       if (!isSuccess) {
         if (res.needRedirectToUpdate) {
           dispatch(redirectToUpdate(res.data));
@@ -37,7 +37,7 @@ export function registerUser(userData) {
   return async dispatch => {
     try {
       dispatch({ type: T.USER_ACTION_FETCH });
-      const { isSuccess, ...res } = await User.register(userData);
+      const { isSuccess, ...res } = await Auth.register(userData);
       if (!isSuccess) {
         dispatch({ type: T.USER_REGISTER_ERROR, message: res.message });
         return;
@@ -91,7 +91,7 @@ export function restorePassword(phone) {
   return async dispatch => {
     try {
       dispatch({ type: T.USER_ACTION_FETCH });
-      const { isSuccess, ...res } = await User.restorePassword(`7${phone}`);
+      const { isSuccess, ...res } = await Auth.restorePassword(`7${phone}`);
       if (!isSuccess) {
         dispatch({ type: T.USER_RESTORE_PASSWORD_ERROR, message: res.message });
         return;
@@ -166,7 +166,7 @@ export function legacyUpdateData(userId) {
   return async dispatch => {
     try {
       dispatch({ type: T.USER_LEGACY_UPDATE_FETCH });
-      const { isSuccess, ...res } = await User.legacyUpdate(userId);
+      const { isSuccess, ...res } = await Auth.legacyUpdate(userId);
       if (!isSuccess) {
         if (typeof res.status !== 'undefined') {
           dispatch({ type: T.USER_LEGACY_UPDATE_ERROR, status: res.status });

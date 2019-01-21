@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { SERVER, APP_VERSION } from '../../constants';
+import { SERVER, APP_VERSION } from '../../constants/index';
 
 export default async userId => {
   try {

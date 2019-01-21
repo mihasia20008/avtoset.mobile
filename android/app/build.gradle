@@ -101,7 +101,7 @@ android {
         applicationId "su.avtoset.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2008
+        versionCode 2009
         versionName "2.0.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
