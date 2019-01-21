@@ -169,7 +169,7 @@ class InputPhone extends Component {
             onBlur={this.handleInputBlur}
             value={value}
             editable={editable}
-            selectTextOnFocus={editable}
+            selectTextOnFocus={false}
             mask="([000]) [000] [00] [00]"
           />
         </View>

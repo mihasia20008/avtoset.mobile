@@ -201,7 +201,6 @@ class InputCityPicker extends Component {
           onChangeText={this.handleChangeText}
           value={displayed}
           editable={editable}
-          selectTextOnFocus={editable}
           autoCorrect={false}
         />
         {errorText ? (

@@ -133,7 +133,6 @@ class InputEmail extends Component {
           onBlur={this.handleInputBlur}
           value={value}
           editable={editable}
-          selectTextOnFocus={editable}
           autoCorrect={false}
         />
         {errorText ? (
