@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View, Platform } from 'react-native';
 import { connect } from 'react-redux';
 
 import ValidateIcon from '../../ValidateIcon';
@@ -15,7 +15,6 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   cityList: {
-    zIndex: 1000,
     paddingTop: 5,
     paddingBottom: 5,
     paddingLeft: 10,
@@ -24,6 +23,21 @@ const styles = StyleSheet.create({
     borderColor: '#eaebec',
     borderTopWidth: 0,
     backgroundColor: '#f7f7f7',
+  },
+  ios: {
+    position: 'absolute',
+    bottom: '100%',
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
   },
 });
 
@@ -40,7 +54,6 @@ class InputCityPicker extends Component {
     forceClose: PropTypes.bool,
     onEvent: PropTypes.func.isRequired,
     onFocus: PropTypes.func.isRequired,
-    isFetching: PropTypes.bool.isRequired,
     list: PropTypes.array.isRequired,
     dispatch: PropTypes.func.isRequired,
   };
@@ -51,37 +64,21 @@ class InputCityPicker extends Component {
     displayed: this.props.displayed,
     open: false,
     // eslint-disable-next-line react/no-unused-state
-    needFetch: false,
-    // eslint-disable-next-line react/no-unused-state
     needClearField: false,
-    // eslint-disable-next-line react/no-unused-state
-    prevFetchStatus: this.props.isFetching,
   };
 
   static getDerivedStateFromProps(props, state) {
-    const { displayed: propsDisplayed, forceClose, isFetching, dispatch } = props;
-    const { needClearField, displayed: stateDisplayed, open, needFetch, prevFetchStatus } = state;
+    const { forceClose } = props;
+    const { needClearField, open } = state;
     if (needClearField) {
       return {
         displayed: '',
         needClearField: false,
       };
     }
-    if (propsDisplayed.toLowerCase().search(stateDisplayed.toLowerCase()) !== -1) {
-      return {
-        displayed: propsDisplayed,
-      };
-    }
     if (forceClose && open) {
       return {
         open: false,
-      };
-    }
-    if (needFetch && prevFetchStatus && !isFetching) {
-      dispatch(fetchCities(stateDisplayed));
-      return {
-        needFetch: false,
-        prevFetchStatus: isFetching,
       };
     }
     return {};
@@ -121,7 +118,7 @@ class InputCityPicker extends Component {
   };
 
   handleChangeText = value => {
-    const { isFetching, name, status, onEvent, dispatch } = this.props;
+    const { name, status, onEvent, dispatch } = this.props;
 
     if (status) {
       onEvent(name, {
@@ -131,14 +128,10 @@ class InputCityPicker extends Component {
         displayed: '',
       });
     }
-    if (isFetching) {
-      // eslint-disable-next-line react/no-unused-state
-      this.setState({ displayed: value, needFetch: true });
-      return;
-    }
     this.setState({ displayed: value });
-    if (value.length > 2) {
+    if (value.length > 2 && value.search(/\s/) === -1) {
       dispatch(fetchCities(value));
+      this.setState({ open: true });
     }
   };
 
@@ -151,7 +144,7 @@ class InputCityPicker extends Component {
       value,
       focused: false,
     });
-    this.setState({ open: false });
+    this.setState({ open: false, displayed });
     dispatch(clearCitiesList());
   };
 
@@ -175,11 +168,13 @@ class InputCityPicker extends Component {
     );
   };
 
-  renderCityList() {
+  renderCityList(isIOS) {
     const { open, displayed } = this.state;
 
     if (open && displayed.length > 2) {
-      return <View style={styles.cityList}>{this.renderCityItems()}</View>;
+      return (
+        <View style={[styles.cityList, isIOS ? styles.ios : '']}>{this.renderCityItems()}</View>
+      );
     }
 
     return null;
@@ -188,6 +183,7 @@ class InputCityPicker extends Component {
   render() {
     const { label, required, editable, status, errorText } = this.props;
     const { displayed } = this.state;
+    const isIOS = Platform.OS !== 'android';
 
     return (
       <View style={[globalStyles.container, styles.container]}>
@@ -195,21 +191,24 @@ class InputCityPicker extends Component {
           <Text style={globalStyles.labelText}>{label}</Text>
           {required ? <Text style={globalStyles.star}>*</Text> : null}
         </View>
-        <TextInput
-          style={globalStyles.input}
-          onFocus={this.handleFocus}
-          onChangeText={this.handleChangeText}
-          value={displayed}
-          editable={editable}
-          autoCorrect={false}
-        />
+        <View>
+          {isIOS && this.renderCityList()}
+          <TextInput
+            style={globalStyles.input}
+            onFocus={this.handleFocus}
+            onChangeText={this.handleChangeText}
+            value={displayed}
+            editable={editable}
+            autoCorrect={false}
+          />
+        </View>
         {errorText ? (
           <View style={globalStyles.errorWrap}>
             <Text style={globalStyles.errorText}>{errorText}</Text>
           </View>
         ) : null}
         <ValidateIcon type={status} />
-        {this.renderCityList()}
+        {!isIOS && this.renderCityList()}
       </View>
     );
   }
@@ -217,7 +216,6 @@ class InputCityPicker extends Component {
 
 const mapStateToProps = ({ CityPicker }) => {
   return {
-    isFetching: CityPicker.fetching,
     list: CityPicker.list,
   };
 };

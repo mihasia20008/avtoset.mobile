@@ -82,7 +82,7 @@ class InputPhone extends Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    if (props.value !== state.value) {
+    if (props.value !== state.value && props.value.length > state.value.length) {
       return {
         value: props.value,
       };

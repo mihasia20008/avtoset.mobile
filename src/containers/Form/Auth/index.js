@@ -42,7 +42,7 @@ class AuthForm extends Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    if (props.defaultPhone && props.defaultPhone !== state.login.value) {
+    if (props.defaultPhone && props.defaultPhone.length > state.login.value.length) {
       return {
         login: Object.assign({}, state.login, { value: props.defaultPhone }),
       };
