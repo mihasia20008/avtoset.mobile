@@ -344,6 +344,7 @@ class RegisterForm extends Component {
             }),
           });
         }
+        submitObject[key] = input.checked;
         return;
       }
       if (input.status === 'error') {
