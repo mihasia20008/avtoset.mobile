@@ -15,7 +15,7 @@ class RegisterForm extends Component {
     isSign: PropTypes.bool.isRequired,
     defaultPhone: PropTypes.string,
     infoMessage: PropTypes.string,
-    errorText: PropTypes.string.isRequired,
+    errors: PropTypes.object.isRequired,
     onSuccessSign: PropTypes.func.isRequired,
     onRepeatPhone: PropTypes.func.isRequired,
     onGoToAuth: PropTypes.func.isRequired,
@@ -111,11 +111,54 @@ class RegisterForm extends Component {
       error: false,
       checked: false,
       errorText: '',
-      editable: false,
+      // editable: false,
+    },
+    errors: {
+      wasShow: false,
+      text: '',
     },
   };
 
   static getDerivedStateFromProps(props, state) {
+    const serverErrorKeys = Object.keys(props.errors);
+    if (serverErrorKeys.length) {
+      let notProcessedErrors = serverErrorKeys;
+      const newState = Object.keys(state).reduce((acc, key) => {
+        const filteredErrorKeys = serverErrorKeys.filter(error => error.search(`\\.${key}`) !== -1);
+        notProcessedErrors = notProcessedErrors.filter(error => error.search(`\\.${key}`) === -1);
+        if (key === 'car') {
+          const carErrors = filteredErrorKeys.reduce(
+            (list, error) =>
+              Object.assign({}, list, {
+                [`${error.split('.')[2]}`]: props.errors[error][0],
+              }),
+            {},
+          );
+          return Object.assign({}, acc, {
+            [`${key}`]: Object.assign({}, state[key], { errorText: carErrors }),
+          });
+        }
+        const errorText = filteredErrorKeys.reduce((text, error) => {
+          if (text.length) {
+            return `${text} \n${props.errors[error][0]}`;
+          }
+          return props.errors[error][0];
+        }, '');
+        return Object.assign({}, acc, {
+          [`${key}`]: Object.assign({}, state[key], { errorText }),
+        });
+      }, {});
+      const errorText = notProcessedErrors.reduce((text, error) => {
+        if (text.length) {
+          return `${text} \n${props.errors[error][0]}`;
+        }
+        return props.errors[error][0];
+      }, '');
+      newState.errors = Object.assign({}, state.errors, { wasShow: true, text: errorText });
+      props.dispatch(resetRegisterData());
+      return newState;
+    }
+
     if (props.confirmPhoneStatus === 2 && state.login.editable) {
       return Object.keys(state).reduce((acc, key) => {
         acc[key] = Object.assign({}, state[key], { editable: key !== 'phone' });
@@ -341,18 +384,19 @@ class RegisterForm extends Component {
   };
 
   render() {
-    const { checked } = this.state.confidential;
-    const { errorText, infoMessage } = this.props;
+    const { infoMessage } = this.props;
+    const { errors, ...restState } = this.state;
+    const { checked } = restState.confidential;
 
     return (
       <View onStartShouldSetResponder={this.handleTouchOutsideCityPicker}>
         {infoMessage ? <Text style={globalFormStyles.infoMessage}>{infoMessage}</Text> : null}
-        {Object.keys(this.state).map(key => {
+        {Object.keys(restState).map(key => {
           if (key === 'confidential') {
             return (
               <Confidential
                 key={key}
-                {...this.state[key]}
+                {...restState[key]}
                 onToggleStatus={this.handleToggleConfidentialStatus}
               />
             );
@@ -363,11 +407,11 @@ class RegisterForm extends Component {
               name={key}
               onEvent={this.handleInputBlur}
               onFocus={this.handleInputFocus}
-              {...this.state[key]}
+              {...restState[key]}
             />
           );
         })}
-        {errorText ? <Text style={globalFormStyles.errorText}>{errorText}</Text> : null}
+        {errors.text ? <Text style={globalFormStyles.errorText}>{errors.text}</Text> : null}
         <View style={globalFormStyles.buttons}>
           <Button disabled={!checked} text="Зарегистироваться" onPress={this.handleSubmitForm} />
           <Button isShadow text="Назад" onPress={this.handleGoToAuth} />
@@ -380,7 +424,7 @@ class RegisterForm extends Component {
 const mapStateToProps = ({ User, PhoneConfirm }) => {
   return {
     isSign: User.result.isSign,
-    errorText: User.errors.sign,
+    errors: User.errors.sign,
     confirmPhoneStatus: PhoneConfirm.status,
   };
 };

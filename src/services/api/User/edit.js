@@ -31,7 +31,7 @@ export default async (userId, userData) => {
     return {
       isSuccess: false,
       needLog: true,
-      message: 'Ошибка выполнения процесса обновления данных пользователя',
+      message: 'Ошибка выполнения процесса изменения данных пользователя',
       forDevelopers: err.message,
     };
   }

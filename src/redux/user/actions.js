@@ -4,6 +4,18 @@ import * as T from './actionTypes';
 import { User, Auth } from '../../services/api';
 import { redirectToUpdate, resetStatus } from '../checkversion/actions';
 
+export function logoutFromAccount() {
+  return async dispatch => {
+    const wasRunning = await AsyncStorage.getItem('wasRunning');
+    await AsyncStorage.clear();
+    if (wasRunning) {
+      await AsyncStorage.setItem('wasRunning', wasRunning);
+    }
+    dispatch({ type: T.USER_LOGOUT_END });
+    dispatch(resetStatus());
+  };
+}
+
 export function authUser(authObject) {
   return async dispatch => {
     try {
@@ -39,7 +51,7 @@ export function registerUser(userData) {
       dispatch({ type: T.USER_ACTION_FETCH });
       const { isSuccess, ...res } = await Auth.register(userData);
       if (!isSuccess) {
-        dispatch({ type: T.USER_REGISTER_ERROR, message: res.message });
+        dispatch({ type: T.USER_REGISTER_ERROR, errors: res.errors });
         return;
       }
       const { id, authToken, ...rest } = res;
@@ -48,7 +60,7 @@ export function registerUser(userData) {
       await AsyncStorage.setItem('userData', JSON.stringify(rest));
       dispatch({ type: T.USER_REGISTER_SUCCESS, data: res });
     } catch (err) {
-      dispatch({ type: T.USER_REGISTER_ERROR, message: 'Ошибка в процессе авторизации' });
+      dispatch({ type: T.USER_REGISTER_ERROR, message: 'Ошибка в процессе регистрации' });
     }
   };
 }
@@ -146,6 +158,7 @@ export function updateData(userId) {
       if (!isSuccess) {
         if (res.needLogout) {
           dispatch({ type: T.USER_LOGOUT_START });
+          dispatch(logoutFromAccount());
           return;
         }
         if (res.needRedirectToUpdate) {
@@ -191,12 +204,5 @@ export function legacyUpdateData(userId) {
     } catch (err) {
       dispatch({ type: T.USER_LEGACY_UPDATE_ERROR, message: err.message });
     }
-  };
-}
-
-export function logoutFromAccount() {
-  return dispatch => {
-    dispatch({ type: T.USER_LOGOUT_END });
-    dispatch(resetStatus());
   };
 }

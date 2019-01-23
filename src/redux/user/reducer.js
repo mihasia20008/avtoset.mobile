@@ -23,7 +23,7 @@ const initialState = {
     isChange: false,
   },
   errors: {
-    sign: '',
+    sign: {},
     auth: '',
     restore: '',
     edit: '',
@@ -74,7 +74,7 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         isFetching: false,
-        errors: Object.assign({}, state.errors, { sign: action.message }),
+        errors: Object.assign({}, state.errors, { sign: action.errors }),
       };
     }
     case T.USER_REGISTER_SUCCESS: {
@@ -88,7 +88,7 @@ export default (state = initialState, action = {}) => {
     case T.USER_REGISTER_RESET: {
       return {
         ...state,
-        errors: Object.assign({}, state.errors, { sign: '' }),
+        errors: Object.assign({}, state.errors, { sign: {} }),
         result: Object.assign({}, state.result, { isSign: false }),
       };
     }

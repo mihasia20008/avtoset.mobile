@@ -22,7 +22,7 @@ export default async (id, userData) => {
     return {
       isSuccess: false,
       needLog: true,
-      message: 'Ошибка выполнения процесса обновления пароля',
+      message: 'Ошибка выполнения процесса изменения пароля',
       forDevelopers: err.message,
     };
   }

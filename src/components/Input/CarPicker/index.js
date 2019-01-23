@@ -10,7 +10,7 @@ import { fetchCarList, resetAllFields } from '../../../redux/auto/actions';
 class InputCarPicker extends Component {
   static propTypes = {
     name: PropTypes.string.isRequired,
-    errorText: PropTypes.string.isRequired,
+    errorText: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
     fields: PropTypes.array.isRequired,
     editable: PropTypes.bool,
     complete: PropTypes.bool.isRequired,
@@ -73,10 +73,13 @@ class InputCarPicker extends Component {
     const fieldsLength = propsFields.length - 1;
     if (propsFields.length !== Object.keys(stateFields).length || errorText) {
       updatedState.fields = propsFields.reduce((acc, field, index) => {
-        if (errorText && fieldsLength === index) {
+        if (
+          (typeof errorText === 'string' && errorText && fieldsLength === index) ||
+          typeof errorText[field.id] !== 'undefined'
+        ) {
           return Object.assign(acc, {
             [`${field.id}`]: {
-              errorText,
+              errorText: typeof errorText === 'string' ? errorText : errorText[field.id],
               status: 'error',
             },
           });

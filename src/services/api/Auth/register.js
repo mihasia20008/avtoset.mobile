@@ -29,11 +29,17 @@ export default async userData => {
       ...rest,
     };
   } catch (err) {
+    if (err.response.status === 422) {
+      return {
+        isSuccess: false,
+        errors: err.response.data.errors,
+      };
+    }
     // TODO обработка ошибок сервера
     return {
       isSuccess: false,
       needLog: true,
-      message: 'Ошибка выполнения процесса регистрации',
+      errors: { message: ['Ошибка выполнения процесса регистрации'] },
       forDevelopers: err.message,
     };
   }
