@@ -1,4 +1,5 @@
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Platform } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import * as T from './actionTypes';
 
 import { User, Auth } from '../../services/api';
@@ -49,7 +50,13 @@ export function registerUser(userData) {
   return async dispatch => {
     try {
       dispatch({ type: T.USER_ACTION_FETCH });
-      const { isSuccess, ...res } = await Auth.register(userData);
+      const metaData = {
+        // eslint-disable-next-line no-nested-ternary
+        os: Platform.OS === 'android' ? 'Android' : Platform.isPad ? 'iPad' : 'iPhone',
+        version: DeviceInfo.getSystemVersion(),
+        device: `${DeviceInfo.getBrand()} ${DeviceInfo.getModel()}`,
+      };
+      const { isSuccess, ...res } = await Auth.register(userData, metaData);
       if (!isSuccess) {
         dispatch({ type: T.USER_REGISTER_ERROR, errors: res.errors });
         return;

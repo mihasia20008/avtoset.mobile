@@ -2,13 +2,14 @@ import axios from 'axios';
 
 import { APP_VERSION, SERVER } from '../../constants/index';
 
-export default async userData => {
+export default async (userData, metaData) => {
   try {
     const { data: response } = await axios({
       method: 'POST',
       url: `${SERVER.HOST}${SERVER.API_PATH}/users?version=${APP_VERSION}`,
       data: {
         data: userData,
+        meta: metaData,
       },
     });
     if (typeof response === 'string') {
