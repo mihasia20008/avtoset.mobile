@@ -5,13 +5,11 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from '../Icon';
 
 const styles = StyleSheet.create({
-  button: {
-    flex: 1,
-  },
   item: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
   },
   active: {
     backgroundColor: '#0065BF',

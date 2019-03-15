@@ -2,14 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, StyleSheet, Dimensions, AsyncStorage } from 'react-native';
 import { connect } from 'react-redux';
-import RNExitApp from 'react-native-exit-app';
 
 import Spinner from '../../components/Spinner';
 
-import { getDataFromAsyncStorage, legacyUpdateData } from '../../redux/user/actions';
+import { getDataFromAsyncStorage } from '../../redux/user/actions';
 import { checkVersion } from '../../redux/checkversion/actions';
 import { checkNetwork, Logger } from '../../services/utilities';
-import getInfoFromDb from './getInfoFromDb';
 
 const styles = StyleSheet.create({
   container: {
@@ -37,13 +35,8 @@ const styles = StyleSheet.create({
 
 class LoadingPage extends Component {
   static propTypes = {
-    id: PropTypes.number,
     checkVersionFetch: PropTypes.bool,
     needUpdate: PropTypes.bool,
-    legacyData: PropTypes.shape({
-      isFetching: PropTypes.bool,
-      status: PropTypes.string,
-    }),
     navigation: PropTypes.shape({
       navigate: PropTypes.func.isRequired,
     }),
@@ -60,7 +53,7 @@ class LoadingPage extends Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    const { legacyData, id, checkVersionFetch, needUpdate } = props;
+    const { checkVersionFetch, needUpdate } = props;
     const { prevVersionFetch, prevNeedUpdate, tempPath } = state;
     if (!checkVersionFetch && prevVersionFetch !== checkVersionFetch) {
       if (!prevNeedUpdate && needUpdate) {
@@ -83,32 +76,6 @@ class LoadingPage extends Component {
         prevNeedUpdate: needUpdate,
       };
     }
-    if (!legacyData.isFetching && legacyData.status === 'success') {
-      Logger({
-        level: 'debug',
-        code: '#4004',
-        message: 'Успешный перенос авторизации пользователя из старой версии приложения',
-        data: { user_id: id },
-        trace: 'src/pages/Loading/index.js:73',
-        // eslint-disable-next-line no-console
-      }).catch(err => console.log(err));
-      return {
-        pathToGo: 'App',
-      };
-    }
-    if (!legacyData.isFetching && legacyData.status === 'error') {
-      Logger({
-        level: 'debug',
-        code: '#4005',
-        message: 'Ошибка переноса авторизации на стороне сервера',
-        data: legacyData.message,
-        trace: 'src/pages/Loading/index.js:87',
-        // eslint-disable-next-line no-console
-      }).catch(err => console.log(err));
-      return {
-        pathToGo: 'Auth',
-      };
-    }
     return {};
   }
 
@@ -128,62 +95,74 @@ class LoadingPage extends Component {
     }
   }
 
-  handleLoadApp = async () => {
-    const { dispatch } = this.props;
-    const token = await AsyncStorage.getItem('authToken');
-    if (token) {
+  loadUserFromStorage = async token => {
+    try {
+      const { dispatch } = this.props;
       const id = await AsyncStorage.getItem('id');
       const jsonData = await AsyncStorage.getItem('userData');
       const userData = await JSON.parse(jsonData);
       dispatch(getDataFromAsyncStorage({ id: +id, authToken: token, ...userData }));
-      this.handleCheckAppVersion('App').catch(() => this.setState({ pathToGo: 'Auth' }));
-    } else {
-      const isFirstRun = await AsyncStorage.getItem('wasRunning');
-      await AsyncStorage.setItem('wasRunning', 'true');
-      if (!isFirstRun) {
-        const hasNetwork = await checkNetwork();
-        if (hasNetwork) {
-          getInfoFromDb(this.callbackGettingData);
-          return;
-        }
-        // eslint-disable-next-line no-alert
-        alert(
-          'Для первого запуска приложения после обновления необходимо подключение к сети Интеренет',
-        );
-        setTimeout(() => RNExitApp.exitApp(), 2500);
-      }
-      this.handleCheckAppVersion('Auth').catch(() => this.setState({ pathToGo: 'Auth' }));
+      return 'App';
+    } catch (err) {
+      Logger({
+        level: 'error',
+        code: '#4011',
+        message: 'Ошибка получения данных пользователя из localStorage',
+        data: {
+          token,
+          message: err.message,
+        },
+        trace: 'src/pages/Loading/index.js:107',
+        // eslint-disable-next-line no-console
+      }).catch(logErr => console.log(logErr));
+      return 'Auth';
     }
   };
 
   handleCheckAppVersion = async path => {
-    const hasNetwork = await checkNetwork();
-    if (hasNetwork) {
-      const { dispatch } = this.props;
-      // eslint-disable-next-line react/no-unused-state
-      this.setState({ tempPath: path });
-      dispatch(checkVersion());
-      return;
+    try {
+      const hasNetwork = await checkNetwork();
+      if (hasNetwork) {
+        const { dispatch } = this.props;
+        // eslint-disable-next-line react/no-unused-state
+        this.setState({ tempPath: path });
+        dispatch(checkVersion());
+        return;
+      }
+      this.setState({ pathToGo: path });
+    } catch (err) {
+      Logger({
+        level: 'warning',
+        code: '#4012',
+        message: 'Ошибка проверки версии приложения',
+        data: {
+          message: err.message,
+        },
+        trace: 'src/pages/Loading/index.js:134',
+        // eslint-disable-next-line no-console
+      }).catch(logErr => console.log(logErr));
+      this.setState({ pathToGo: path });
     }
-    this.setState({ pathToGo: path });
   };
 
-  callbackGettingData = async result => {
-    const { isSuccess, ...rest } = result;
-    if (!isSuccess) {
+  handleLoadApp = async () => {
+    try {
+      const token = await AsyncStorage.getItem('authToken');
+      const redirectPath = token ? await this.loadUserFromStorage(token) : 'Auth';
+      await this.handleCheckAppVersion(redirectPath);
+    } catch (err) {
       Logger({
-        level: 'debug',
-        code: '#4003',
-        message: 'Ошибка переноса авторизации на стороне приложения',
-        data: rest,
-        trace: 'src/pages/Loading/index.js:186',
+        level: 'error',
+        code: '#4010',
+        message: 'Ошибка выполнения начельного сценария загрузки приложения',
+        data: {
+          message: err.message,
+        },
+        trace: 'src/pages/Loading/index.js:154',
         // eslint-disable-next-line no-console
-      }).catch(err => console.log(err));
-      this.setState({ pathToGo: 'Hello' });
-      return;
+      }).catch(logErr => console.log(logErr));
+      this.setState({ pathToGo: 'Auth' });
     }
-    const { dispatch } = this.props;
-    dispatch(legacyUpdateData(rest.user.ID));
   };
 
   render() {
@@ -200,10 +179,8 @@ class LoadingPage extends Component {
   }
 }
 
-const mapStateToProps = ({ User, CheckVersion }) => {
+const mapStateToProps = ({ CheckVersion }) => {
   return {
-    id: User.userData.id,
-    legacyData: User.legacy,
     checkVersionFetch: CheckVersion.fetch,
     needUpdate: CheckVersion.needUpdate,
   };
