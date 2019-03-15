@@ -1,4 +1,3 @@
-import React from 'react';
 import { createBottomTabNavigator } from 'react-navigation';
 
 import DiscountPage from './Discount';
@@ -19,7 +18,6 @@ export default createBottomTabNavigator(
     order: ['Personal', 'Home', 'Discount', 'Coupons'],
     animationEnabled: true,
     initialRouteName: 'Discount',
-    // eslint-disable-next-line react/display-name
-    tabBarComponent: props => <Footer {...props} />,
+    tabBarComponent: Footer,
   },
 );
