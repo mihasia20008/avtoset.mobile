@@ -32,7 +32,7 @@ public class MainApplication extends Application implements ReactApplication {
             new ColorMatrixImageFiltersPackage(),
             new RNTextInputMaskPackage(),
             new SvgPackage(),
-            new RNGestureHandlerPackage(),
+            new RNGestureHandlerPackage()
       );
     }
 
