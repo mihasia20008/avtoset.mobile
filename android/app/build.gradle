@@ -99,9 +99,9 @@ android {
 
     defaultConfig {
         applicationId "su.avtoset.app"
-        minSdkVersion 19
+        minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2014
+        versionCode 20101
         versionName "2.0.1"
         ndk {
             abiFilters "armeabi-v7a", "x86"
